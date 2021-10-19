@@ -21,3 +21,5 @@ $router->get('/profile','UserController@profile');
 
 $router->post('/tr-store','TransactController@store');
 
+$router->get('/tr-list','ReportController@transact');
+

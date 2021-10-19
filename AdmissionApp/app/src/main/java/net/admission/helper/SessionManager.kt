@@ -43,6 +43,13 @@ class SessionManager(var c: Context) {
             editor.commit()
         }
 
+    var stringEditData: String?
+        get() = pref.getString("stringEditData", "")
+        set(stringEditData) {
+            editor.putString("stringEditData", stringEditData!!)
+            editor.commit()
+        }
+
     //logout user
     fun logout() {
         editor.clear()

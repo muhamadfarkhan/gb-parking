@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
@@ -72,7 +74,8 @@ class NewTransactActivity : AppCompatActivity() {
     }
 
     private fun goSubmit() {
-
+        binding.layoutProgress.progressOverlay.visibility = VISIBLE
+        binding.layoutProgress.textLoading.text = "Processing data"
 
         val okHttpClient = OkHttpClient().newBuilder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -93,6 +96,7 @@ class NewTransactActivity : AppCompatActivity() {
             .build()
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject?) {
+                    binding.layoutProgress.progressOverlay.visibility = GONE
 
                     Log.d("transact",response!!.toString())
 
@@ -100,6 +104,7 @@ class NewTransactActivity : AppCompatActivity() {
                 }
 
                 override fun onError(anError: ANError?) {
+                    binding.layoutProgress.progressOverlay.visibility = GONE
 
                     val errorBody = JSONObject(anError!!.errorBody)
                     val error = errorBody.getString("message")
