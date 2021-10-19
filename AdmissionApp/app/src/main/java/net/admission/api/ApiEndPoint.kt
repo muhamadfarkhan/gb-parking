@@ -7,6 +7,7 @@ class ApiEndPoint {
 
         const val login = "$SERVER/login"
         const val profile = "$SERVER/profile"
+        const val storeTransact = "$SERVER/tr-store"
 
     }
 }

@@ -32,8 +32,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        setContentView(binding.root)
+
+        session = SessionManager(this)
 
         initButton()
         initComponen()
@@ -64,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
             .build()
 
         AndroidNetworking.post(ApiEndPoint.login)
-            .addBodyParameter("email",binding.inputUsername.text.toString())
+            .addBodyParameter("username",binding.inputUsername.text.toString())
             .addBodyParameter("password",binding.inputPassword.text.toString())
             .setPriority(Priority.MEDIUM)
             .setOkHttpClient(okHttpClient)
@@ -74,18 +75,16 @@ class LoginActivity : AppCompatActivity() {
 
                     binding.layoutProgress.progressOverlay.visibility = View.GONE
 
-                    val token = response!!.getString("token").toString()
+                    val data = response!!.getJSONObject("data")
 
-                    val user = response.getJSONObject("user")
+                    val token = data.getString("token").toString()
+
+                    val user = data.getJSONObject("user")
 
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     session.createLoginSession(token)
-                    session.username = user.getString("username")
-                    session.fullname = user.getString("name")
-                    session.phone = user.getString("phone")
-                    session.email = user.getString("email")
-                    session.userId = user.getInt("id").toString()
-                    session.managerId = user.getInt("sup_id").toString()
+                    session.username = user.getString("USRNM")
+                    session.fullname = user.getString("FULLNM")
                     startActivity(intent)
                     finish()
 

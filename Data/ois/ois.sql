@@ -12,13 +12,13 @@
 
 SET FOREIGN_KEY_CHECKS=0;
 
-DROP DATABASE IF EXISTS `ois`;
+-- DROP DATABASE IF EXISTS `ois`;
 
-CREATE DATABASE `ois`
-    CHARACTER SET 'latin1'
-    COLLATE 'latin1_swedish_ci';
+-- CREATE DATABASE `ois`
+--     CHARACTER SET 'latin1'
+--     COLLATE 'latin1_swedish_ci';
 
-USE `ois`;
+-- USE `ois`;
 
 #
 # Structure for the `akh_hari` table : 

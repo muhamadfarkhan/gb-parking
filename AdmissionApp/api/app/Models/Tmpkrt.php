@@ -4,7 +4,7 @@ namespace App\models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Tmpkrt extends Model
+class TmpKrt extends Model
 {
     protected $table = 'tmp_krt';
 
