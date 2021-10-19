@@ -3,7 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/MFN/Private/Project/Iyos/AdmissionApp/app/src/main/res/layout/activity_login.xml" value="0.14666666666666667" />
         <entry key="..\:/MFN/Private/Project/Iyos/AdmissionApp/app/src/main/res/layout/activity_main.xml" value="0.1388888888888889" />
+        <entry key="..\:/MFN/Private/Project/Iyos/AdmissionApp/app/src/main/res/layout/include_progress_overlay.xml" value="0.184375" />
+        <entry key="..\:/MFN/Private/Project/Iyos/AdmissionApp/app/src/main/res/layout/snackbar_icon_text.xml" value="0.184375" />
         <entry key="..\:/MFN/Private/Project/Iyos/GBParkingMobile/app/src/main/res/drawable/avd_clock_clock.xml" value="0.1" />
         <entry key="..\:/MFN/Private/Project/Iyos/GBParkingMobile/app/src/main/res/layout/activity_login.xml" value="0.22" />
         <entry key="..\:/MFN/Private/Project/Iyos/GBParkingMobile/app/src/main/res/layout/activity_main.xml" value="0.22" />

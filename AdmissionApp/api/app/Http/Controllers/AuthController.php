@@ -51,7 +51,7 @@ class AuthController extends Controller
                 ]);
 
             } else {
-                return $this->responseApi(400, ['errors' => ['Username Dan Password Anda Salah']]);
+                return $this->responseApi(400, ['Username Dan Password Anda Salah']);
             }
         } catch (Exception $e) {
             $this->code = 500;

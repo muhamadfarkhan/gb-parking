@@ -66,6 +66,7 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="-4dp"
@@ -91,6 +92,7 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="-4dp"
@@ -173,6 +175,10 @@
                 android:layout_height="@dimen/spacing_xlarge" />
 
         </LinearLayout>
+
+        <include
+            layout="@layout/include_progress_overlay"
+            android:id="@+id/layout_progress"/>
 
     </RelativeLayout>
 

@@ -18,3 +18,6 @@ $router->get('/', function () use ($router) {
 $router->post('/login','AuthController@login');
 
 $router->get('/profile','UserController@profile');
+
+$router->post('/tr-store','TransactController@store');
+
