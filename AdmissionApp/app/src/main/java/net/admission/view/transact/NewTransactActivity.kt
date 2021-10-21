@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.ArrayAdapter
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
@@ -124,5 +125,64 @@ class NewTransactActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun populatePelanggan() {
+
+        val okHttpClient = OkHttpClient().newBuilder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
+            .writeTimeout(120, TimeUnit.SECONDS)
+            .build()
+
+        AndroidNetworking.get(ApiEndPoint.listPelanggan)
+            .addHeaders("token", session.token)
+            .setPriority(Priority.MEDIUM)
+            .setOkHttpClient(okHttpClient)
+            .build()
+            .getAsJSONObject(object : JSONObjectRequestListener {
+                override fun onResponse(response: JSONObject?) {
+
+                    binding.layoutProgress.progressOverlay.visibility = GONE
+
+                    Log.d("transact", response!!.toString())
+
+                    val datas = response.getJSONArray("areas")
+                    val areaId: MutableList<String> = ArrayList()
+                    val areas: MutableList<String> = ArrayList()
+
+                    for (i in 0 until datas.length()) {
+
+                        areaId.add(datas.getJSONObject(i).getString("id"))
+                        areas.add(datas.getJSONObject(i).getString("name")+"-"
+                                +datas.getJSONObject(i).getString("address") )
+                    }
+
+                    val adapterArea: ArrayAdapter<*> =
+                        ArrayAdapter<Any?>(applicationContext, android.R.layout.simple_list_item_1,
+                            areas as List<Any?>
+                        )
+                    binding.dropdownPelanggan.setAdapter(adapterArea)
+                    binding.dropdownPelanggan.setOnItemClickListener { adapterView, view, i, l ->
+                        //Toast.makeText(applicationContext,rpaId[i].toString(), Toast.LENGTH_LONG).show()
+                        areaIdVal = areaId[i]
+                    }
+                }
+
+                override fun onError(anError: ANError?) {
+
+                    binding.layoutProgress.progressOverlay.visibility = GONE
+
+                    Log.d("transact", anError!!.message.toString())
+
+                    val errorBody = JSONObject(anError.errorBody)
+
+                    val error = errorBody.getString("message")
+
+                    Tools.showError(this@NewTransactActivity, error)
+
+                }
+
+            })
     }
 }

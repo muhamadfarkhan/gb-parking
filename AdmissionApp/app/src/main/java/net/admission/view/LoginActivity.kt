@@ -95,9 +95,6 @@ class LoginActivity : AppCompatActivity() {
                     binding.layoutProgress.progressOverlay.visibility = View.GONE
 
                     Log.d("login-msg", anError!!.message.toString())
-                    Log.d("login-detail", anError.errorDetail)
-                    Log.d("login-body",anError.errorBody)
-                    Log.d("login-code", anError.errorCode.toString())
 
                     val errorBody = JSONObject(anError.errorBody)
 

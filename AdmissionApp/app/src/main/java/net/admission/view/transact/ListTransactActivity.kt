@@ -1,10 +1,12 @@
-package net.admission.view
+package net.admission.view.transact
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.androidnetworking.AndroidNetworking
@@ -13,19 +15,17 @@ import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
 import net.admission.adapter.AdapterListAnimation
 import net.admission.api.ApiEndPoint
-import net.admission.databinding.ActivityMainBinding
+import net.admission.databinding.ActivityListTransactBinding
 import net.admission.helper.SessionManager
 import net.admission.model.Transact
 import net.admission.utils.ItemAnimation
 import net.admission.utils.Tools
-import net.admission.view.transact.ListTransactActivity
-import net.admission.view.transact.NewTransactActivity
 import okhttp3.OkHttpClient
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+class ListTransactActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityListTransactBinding
     private lateinit var session: SessionManager
     private lateinit var recyclerViewTransact: RecyclerView
     private lateinit var mAdapter: AdapterListAnimation
@@ -34,53 +34,42 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityListTransactBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         session = SessionManager(this)
 
-        initButton()
         initComponent()
+        initToolbar()
         getListTransact()
     }
 
     private fun initComponent() {
-        binding.userName.text = session.username
-        binding.userDetail.text = session.fullname
 
         recyclerViewTransact = binding.recyclerView
         recyclerViewTransact.layoutManager = LinearLayoutManager(this)
         recyclerViewTransact.setHasFixedSize(true)
     }
 
-    private fun initButton() {
-        binding.loadMore.setOnClickListener {
-            val intent = Intent(this@MainActivity, ListTransactActivity::class.java)
-            startActivity(intent)
-        }
-        binding.btnNewTransact.setOnClickListener {
-            val intent = Intent(this@MainActivity, NewTransactActivity::class.java)
-            startActivity(intent)
-        }
-        binding.btnGoProfile.setOnClickListener {
-            val intent = Intent(this@MainActivity, ProfileActivity::class.java)
-            startActivity(intent)
-        }
-        binding.userName.setOnClickListener {
-            val intent = Intent(this@MainActivity, ProfileActivity::class.java)
-            startActivity(intent)
-        }
-        binding.userDetail.setOnClickListener {
-            val intent = Intent(this@MainActivity, ProfileActivity::class.java)
-            startActivity(intent)
-        }
 
+    private fun initToolbar() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                this.onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
     private fun getListTransact() {
 
-        binding.progressIndeterminate.visibility = View.VISIBLE
+        binding.layoutProgress.progressOverlay.visibility = View.VISIBLE
+        binding.layoutProgress.textLoading.text = "Loading data"
 
         val okHttpClient = OkHttpClient().newBuilder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -96,14 +85,14 @@ class MainActivity : AppCompatActivity() {
             .getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject?) {
 
-                    binding.progressIndeterminate.visibility = View.GONE
+                    binding.layoutProgress.progressOverlay.visibility = GONE
                     Log.d("main-activity", response!!.toString())
 
                     val user = response.getJSONArray("data")
 
                     items.clear()
 
-                    for (i in 0 until 5) {
+                    for (i in 0 until user.length()) {
 
                         items.add(
                             Transact(user.getJSONObject(i).getString("PASSNO"),
@@ -129,14 +118,14 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onError(anError: ANError?) {
 
-                    binding.progressIndeterminate.visibility = View.GONE
+                    binding.layoutProgress.progressOverlay.visibility = GONE
                     Log.d("main-activity", anError!!.message.toString())
 
                     val errorBody = JSONObject(anError.errorBody)
 
                     val error = errorBody.getString("message")
 
-                    Tools.showError(this@MainActivity,error)
+                    Tools.showError(this@ListTransactActivity,error)
 
                 }
 

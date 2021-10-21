@@ -9,6 +9,7 @@ class ApiEndPoint {
         const val profile = "$SERVER/profile"
         const val storeTransact = "$SERVER/tr-store"
         const val listTransact = "$SERVER/tr-list"
+        const val listPelanggan = "$SERVER/pelanggan-list"
 
     }
 }

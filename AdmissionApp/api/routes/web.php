@@ -23,3 +23,5 @@ $router->post('/tr-store','TransactController@store');
 
 $router->get('/tr-list','ReportController@transact');
 
+$router->get('/prod-list','MasterController@tblProd');
+
