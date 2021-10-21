@@ -51,7 +51,7 @@ class MasterController extends Controller
     {
         try {
 
-            $this->data['tbl_plg'] = TblPlg::get();
+            $this->data = TblPlg::get();
 
         } catch (Exception $e) {
             $this->code = 500;
