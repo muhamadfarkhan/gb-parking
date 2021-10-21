@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TblKrt;
 use App\Models\TblProd;
-use App\Models\TmpKrt;
+use App\Models\TblPlg;
 use Exception;
 use Validator;
 
@@ -32,6 +32,26 @@ class MasterController extends Controller
         try {
 
             $this->data = TblProd::where('passprdd','!=','0')->get();
+
+        } catch (Exception $e) {
+            $this->code = 500;
+            $this->data = $e;
+        }
+        return $this->responseApi($this->code, $this->data);
+
+    }
+
+    /**
+     * Profile user.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function tblPlg(Request $request)
+    {
+        try {
+
+            $this->data['tbl_plg'] = TblPlg::get();
 
         } catch (Exception $e) {
             $this->code = 500;

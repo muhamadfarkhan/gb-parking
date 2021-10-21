@@ -25,3 +25,5 @@ $router->get('/tr-list','ReportController@transact');
 
 $router->get('/prod-list','MasterController@tblProd');
 
+$router->get('/plg-list','MasterController@tblPlg');
+
