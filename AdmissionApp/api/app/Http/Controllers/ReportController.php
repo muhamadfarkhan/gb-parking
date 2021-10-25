@@ -31,6 +31,7 @@ class ReportController extends Controller
         try {
 
             $this->data = TblKrt::join('tbl_prod','tbl_prod.PRODTYP','=','tbl_krt.PRODTYP')
+                    ->select('tbl_krt.*')
                     ->orderBy('lupddttime','desc')->get();
 
         } catch (Exception $e) {
