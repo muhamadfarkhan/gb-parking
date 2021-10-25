@@ -54,6 +54,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initButton() {
+        binding.btnRefresh.setOnClickListener {
+            getListTransact()
+        }
         binding.loadMore.setOnClickListener {
             val intent = Intent(this@MainActivity, ListTransactActivity::class.java)
             startActivity(intent)

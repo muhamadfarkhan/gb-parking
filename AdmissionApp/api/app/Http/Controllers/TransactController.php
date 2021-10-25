@@ -47,10 +47,6 @@ class TransactController extends Controller
 
             // $this->checkDuplicate($request);
 
-            if ($this->checkDuplicate($request)){
-                return $this->responseApi(400, ['Duplicate data']);
-            }
-
             $dataTbl['passno'] = $request->passno;
             $dataTbl['factno'] = $request->factno;
             $dataTbl['regno']  = $request->regno;
@@ -72,8 +68,16 @@ class TransactController extends Controller
             $dataTmp['startdt']  = $request->startdt;
             $dataTmp['enddt']  = $request->enddt;
             
-            $tblKrt = TblKrt::insert($dataTbl);
-            $tmpKrt = TmpKrt::insert($dataTmp);
+            
+            if ($this->checkDuplicate($request)){
+
+                $tblKrt = TblKrt::where('passno',$request->passno)->update($dataTbl);
+                $tmpKrt = TmpKrt::where('passno',$request->passno)->update($dataTmp);
+            }else{
+                
+                $tblKrt = TblKrt::insert($dataTbl);
+                $tmpKrt = TmpKrt::insert($dataTmp);
+            }
 
         } catch (Exception $e) {
             $this->code = 500;
@@ -84,7 +88,8 @@ class TransactController extends Controller
     }
 
     private function checkDuplicate($request){
-        $check = TblKrt::where('passno',$request->passno)->where('factno',$request->factno)->where('vehclass','B')->first();
+        //->where('factno',$request->factno)->where('vehclass','B')
+        $check = TblKrt::where('passno',$request->passno)->first();
 
         if(empty($check)){
             return false;

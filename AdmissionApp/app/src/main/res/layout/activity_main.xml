@@ -423,11 +423,12 @@
                             android:textColor="@color/grey_40" />
 
                         <ImageView
+                            android:id="@+id/btn_refresh"
                             android:layout_width="@dimen/spacing_mxlarge"
                             android:layout_height="@dimen/spacing_mxlarge"
                             android:rotation="45"
-                            app:srcCompat="@drawable/ic_swap_vert"
-                            app:tint="@color/grey_40" />
+                            app:srcCompat="@drawable/ic_refresh"
+                            app:tint="@color/blue_grey_500" />
 
                     </LinearLayout>
 

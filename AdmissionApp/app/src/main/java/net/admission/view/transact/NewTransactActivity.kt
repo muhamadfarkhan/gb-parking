@@ -1,5 +1,6 @@
 package net.admission.view.transact
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -259,17 +260,18 @@ class NewTransactActivity : AppCompatActivity() {
             })
     }
 
+    @SuppressLint("SetTextI18n", "SimpleDateFormat")
     private fun changePeriod(addDays: String) {
         val date = Date()
-        var df = SimpleDateFormat("yyyy-MM-dd")
+        var df = SimpleDateFormat("dd/MM/yyyy")
         val c1: Calendar = Calendar.getInstance()
         val currentDate: String = df.format(date) // get current date here
 
         c1.add(Calendar.DAY_OF_YEAR, addDays.toInt())
-        df = SimpleDateFormat("yyyy-MM-dd")
+        df = SimpleDateFormat("dd/MM/yyyy")
         val resultDate = c1.time
         val dueDate = df.format(resultDate)
 
-        binding.etPeriod.setText(dueDate)
+        binding.etPeriod.setText("$currentDate - $dueDate")
     }
 }
