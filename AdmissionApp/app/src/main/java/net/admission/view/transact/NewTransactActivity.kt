@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ArrayAdapter
@@ -14,9 +15,11 @@ import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
+import net.admission.adapter.AdapterListAnimation
 import net.admission.api.ApiEndPoint
 import net.admission.databinding.ActivityNewTransactBinding
 import net.admission.helper.SessionManager
+import net.admission.model.Transact
 import net.admission.utils.Tools
 import net.admission.view.LoginActivity
 import okhttp3.OkHttpClient
@@ -59,6 +62,57 @@ class NewTransactActivity : AppCompatActivity() {
 
     private fun getDetail(s: String?) {
 
+        binding.layoutProgress.progressOverlay.visibility = VISIBLE
+        binding.layoutProgress.textLoading.text = "Processing data"
+
+        val okHttpClient = OkHttpClient().newBuilder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
+            .writeTimeout(120, TimeUnit.SECONDS)
+            .build()
+
+        AndroidNetworking.post(ApiEndPoint.detailTransact)
+            .addHeaders("token", session.token)
+            .addBodyParameter("passno", session.stringEditData)
+            .setPriority(Priority.MEDIUM)
+            .setOkHttpClient(okHttpClient)
+            .build()
+            .getAsJSONObject(object : JSONObjectRequestListener {
+                override fun onResponse(response: JSONObject?) {
+
+                    binding.layoutProgress.progressOverlay.visibility = GONE
+                    Log.d("transact", response!!.toString())
+
+                    val data = response.getJSONArray("data")
+
+                    val passno = data.getJSONObject(0).getString("PASSNO")
+                    val remark = data.getJSONObject(0).getString("REMARK")
+                    val custId = data.getJSONObject(0).getString("CUSTNO")
+                    val prodId = data.getJSONObject(0).getString("PRODTYP")
+
+                    binding.etPlatNo.setText(passno)
+                    binding.etNote.setText(remark)
+                    custIdVal = custId
+                    prodIdVal = prodId
+                    binding.dropdownPelanggan.setText("")
+                    binding.dropdownProduct.setText("")
+
+                }
+
+                override fun onError(anError: ANError?) {
+
+                    binding.layoutProgress.progressOverlay.visibility = GONE
+                    Log.d("main-activity", anError!!.message.toString())
+
+                    val errorBody = JSONObject(anError.errorBody)
+
+                    val error = errorBody.getString("message")
+
+                    Tools.showError(this@NewTransactActivity,error)
+
+                }
+
+            })
     }
 
     private fun initComponent() {

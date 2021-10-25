@@ -53,7 +53,8 @@ class ReportController extends Controller
         try {
 
             $this->data = TblKrt::join('tbl_prod','tbl_prod.PRODTYP','=','tbl_krt.PRODTYP')
-                    ->select('tbl_krt.*')
+                    ->join('tbl_plg','tbl_plg.CUSTNO','=','tbl_krt.CUSTNO')
+                    ->select('tbl_krt.*','PRODDES','FULLNM')
                     ->where('PASSNO',$request->passno)
                     ->orderBy('lupddttime','desc')->get();
 
