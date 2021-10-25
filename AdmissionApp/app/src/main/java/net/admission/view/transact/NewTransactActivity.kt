@@ -20,6 +20,7 @@ import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 class NewTransactActivity : AppCompatActivity() {
+    private lateinit var passprddVal: String
     private lateinit var custIdVal: String
     private lateinit var prodIdVal: String
     private lateinit var noPlat: String
@@ -212,11 +213,13 @@ class NewTransactActivity : AppCompatActivity() {
 
                     val datas = response.getJSONArray("data")
                     val prodId: MutableList<String> = ArrayList()
+                    val passprdd: MutableList<String> = ArrayList()
                     val products: MutableList<String> = ArrayList()
 
                     for (i in 0 until datas.length()) {
 
                         prodId.add(datas.getJSONObject(i).getString("PRODTYP"))
+                        passprdd.add(datas.getJSONObject(i).getString("PASSPRDD"))
                         products.add(datas.getJSONObject(i).getString("PRODTYP")+"-"
                                 +datas.getJSONObject(i).getString("PRODDES") )
                     }
@@ -229,6 +232,8 @@ class NewTransactActivity : AppCompatActivity() {
                     binding.dropdownProduct.setOnItemClickListener { adapterView, view, i, l ->
                         //Toast.makeText(applicationContext,rpaId[i].toString(), Toast.LENGTH_LONG).show()
                         prodIdVal = prodId[i]
+                        passprddVal = passprdd[i]
+                        changePeriod()
                     }
                 }
 
@@ -247,5 +252,9 @@ class NewTransactActivity : AppCompatActivity() {
                 }
 
             })
+    }
+
+    private fun changePeriod() {
+        binding.etPeriod.setText("test")
     }
 }
