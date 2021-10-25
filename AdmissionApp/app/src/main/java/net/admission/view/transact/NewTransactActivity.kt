@@ -1,6 +1,7 @@
 package net.admission.view.transact
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -17,6 +18,7 @@ import net.admission.api.ApiEndPoint
 import net.admission.databinding.ActivityNewTransactBinding
 import net.admission.helper.SessionManager
 import net.admission.utils.Tools
+import net.admission.view.LoginActivity
 import okhttp3.OkHttpClient
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -80,9 +82,20 @@ class NewTransactActivity : AppCompatActivity() {
                 binding.etNote.error = "Please fill the blank"
             }
             else -> {
-                goSubmit()
+                confirmSubmit()
             }
         }
+    }
+
+    private fun confirmSubmit() {
+        val builder: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
+        builder.setTitle("Apakah data sudah bener ?")
+        builder.setPositiveButton("Ya"
+        ) { _, _ ->
+            goSubmit()
+        }
+        builder.setNegativeButton("cancel", null)
+        builder.show()
     }
 
     private fun goSubmit() {
