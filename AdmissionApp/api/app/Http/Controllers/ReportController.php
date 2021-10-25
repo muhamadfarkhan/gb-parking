@@ -41,5 +41,28 @@ class ReportController extends Controller
         return $this->responseApi($this->code, $this->data);
 
     }
+
+    /**
+     * Profile user.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function transactDetail(Request $request)
+    {
+        try {
+
+            $this->data = TblKrt::join('tbl_prod','tbl_prod.PRODTYP','=','tbl_krt.PRODTYP')
+                    ->select('tbl_krt.*')
+                    ->where('PASSNO',$request->passno)
+                    ->orderBy('lupddttime','desc')->get();
+
+        } catch (Exception $e) {
+            $this->code = 500;
+            $this->data = $e;
+        }
+        return $this->responseApi($this->code, $this->data);
+
+    }
     
 }

@@ -45,9 +45,20 @@ class NewTransactActivity : AppCompatActivity() {
 
         session = SessionManager(this)
 
+        initStatus()
         initComponent()
         initButton()
         initToolbar()
+    }
+
+    private fun initStatus() {
+        if(!session.isCreate){
+            getDetail(session.stringEditData)
+        }
+    }
+
+    private fun getDetail(s: String?) {
+
     }
 
     private fun initComponent() {
