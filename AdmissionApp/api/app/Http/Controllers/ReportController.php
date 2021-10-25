@@ -30,7 +30,7 @@ class ReportController extends Controller
     {
         try {
 
-            $this->data = TblKrt::innerJoin('tbl_prod','tbl_prod.PRODTYP','=','tbl_krt.PRODTYP')
+            $this->data = TblKrt::join('tbl_prod','tbl_prod.PRODTYP','=','tbl_krt.PRODTYP')
                     ->orderBy('lupddttime','desc')->get();
 
         } catch (Exception $e) {

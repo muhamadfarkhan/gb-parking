@@ -30,6 +30,8 @@ class TransactController extends Controller
     {
         try {
 
+            date_default_timezone_set('Asia/Jakarta');
+
             $todayDT = date("Y-m-d H:i:s");
          
             $validator = Validator::make($request->all(), [
