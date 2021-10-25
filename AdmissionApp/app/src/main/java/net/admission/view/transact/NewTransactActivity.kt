@@ -125,6 +125,7 @@ class NewTransactActivity : AppCompatActivity() {
 
                     Log.d("transact",response!!.toString())
 
+                    resetForm()
                     Tools.showSuccess(this@NewTransactActivity, response.getString("message"))
                 }
 
@@ -139,6 +140,15 @@ class NewTransactActivity : AppCompatActivity() {
                 }
 
             })
+    }
+
+    private fun resetForm() {
+        binding.etPlatNo.setText("")
+        binding.etUserName.setText("")
+        binding.etPeriod.setText("")
+        binding.etNote.setText("")
+        binding.dropdownPelanggan.setText("")
+        binding.dropdownProduct.setText("")
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -276,12 +286,12 @@ class NewTransactActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
     private fun changePeriod(addDays: String) {
         val date = Date()
-        var df = SimpleDateFormat("dd/MM/yyyy")
+        var df = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val c1: Calendar = Calendar.getInstance()
         val currentDate: String = df.format(date) // get current date here
 
         c1.add(Calendar.DAY_OF_YEAR, addDays.toInt())
-        df = SimpleDateFormat("dd/MM/yyyy")
+        df = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
         val resultDate = c1.time
         val dueDate = df.format(resultDate)
 
