@@ -20,6 +20,8 @@ import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 class NewTransactActivity : AppCompatActivity() {
+    private lateinit var custIdVal: String
+    private lateinit var prodIdVal: String
     private lateinit var noPlat: String
     private lateinit var name: String
     private lateinit var note: String
@@ -34,8 +36,14 @@ class NewTransactActivity : AppCompatActivity() {
 
         session = SessionManager(this)
 
+        initComponent()
         initButton()
         initToolbar()
+    }
+
+    private fun initComponent() {
+        populateCustomers()
+        populateProds()
     }
 
     private fun initButton() {
@@ -53,7 +61,6 @@ class NewTransactActivity : AppCompatActivity() {
         noPlat = binding.etPlatNo.text.toString()
         name = binding.etUserName.text.toString()
         note = binding.etNote.text.toString()
-        productType = binding.etProductCode.text.toString()
 
         when {
             noPlat.isBlank() -> {
@@ -64,9 +71,6 @@ class NewTransactActivity : AppCompatActivity() {
             }
             note.isBlank() -> {
                 binding.etNote.error = "Please fill the blank"
-            }
-            productType.isBlank() -> {
-                binding.etProductCode.error = "Please fill the blank"
             }
             else -> {
                 goSubmit()
@@ -89,8 +93,8 @@ class NewTransactActivity : AppCompatActivity() {
             .addBodyParameter("factno", noPlat)
             .addBodyParameter("passno", noPlat)
             .addBodyParameter("regno", noPlat)
-            .addBodyParameter("custno", noPlat)
-            .addBodyParameter("prodtyp", noPlat)
+            .addBodyParameter("custno", custIdVal)
+            .addBodyParameter("prodtyp", prodIdVal)
             .addBodyParameter("remark", name)
             .setPriority(Priority.MEDIUM)
             .setOkHttpClient(okHttpClient)
@@ -127,7 +131,7 @@ class NewTransactActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun populatePelanggan() {
+    private fun populateCustomers() {
 
         val okHttpClient = OkHttpClient().newBuilder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -135,7 +139,7 @@ class NewTransactActivity : AppCompatActivity() {
             .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
-        AndroidNetworking.get(ApiEndPoint.listPelanggan)
+        AndroidNetworking.get(ApiEndPoint.listCustomer)
             .addHeaders("token", session.token)
             .setPriority(Priority.MEDIUM)
             .setOkHttpClient(okHttpClient)
@@ -147,25 +151,84 @@ class NewTransactActivity : AppCompatActivity() {
 
                     Log.d("transact", response!!.toString())
 
-                    val datas = response.getJSONArray("areas")
-                    val areaId: MutableList<String> = ArrayList()
-                    val areas: MutableList<String> = ArrayList()
+                    val datas = response.getJSONArray("data")
+                    val custId: MutableList<String> = ArrayList()
+                    val customers: MutableList<String> = ArrayList()
 
                     for (i in 0 until datas.length()) {
 
-                        areaId.add(datas.getJSONObject(i).getString("id"))
-                        areas.add(datas.getJSONObject(i).getString("name")+"-"
-                                +datas.getJSONObject(i).getString("address") )
+                        custId.add(datas.getJSONObject(i).getString("CUSTNO"))
+                        customers.add(datas.getJSONObject(i).getString("FULLNM")+"-"
+                                +datas.getJSONObject(i).getString("FADR") )
                     }
 
                     val adapterArea: ArrayAdapter<*> =
                         ArrayAdapter<Any?>(applicationContext, android.R.layout.simple_list_item_1,
-                            areas as List<Any?>
+                            customers as List<Any?>
                         )
                     binding.dropdownPelanggan.setAdapter(adapterArea)
                     binding.dropdownPelanggan.setOnItemClickListener { adapterView, view, i, l ->
                         //Toast.makeText(applicationContext,rpaId[i].toString(), Toast.LENGTH_LONG).show()
-                        areaIdVal = areaId[i]
+                        custIdVal = custId[i]
+                    }
+                }
+
+                override fun onError(anError: ANError?) {
+
+                    binding.layoutProgress.progressOverlay.visibility = GONE
+
+                    Log.d("transact", anError!!.message.toString())
+
+                    val errorBody = JSONObject(anError.errorBody)
+
+                    val error = errorBody.getString("message")
+
+                    Tools.showError(this@NewTransactActivity, error)
+
+                }
+
+            })
+    }
+
+    private fun populateProds() {
+
+        val okHttpClient = OkHttpClient().newBuilder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
+            .writeTimeout(120, TimeUnit.SECONDS)
+            .build()
+
+        AndroidNetworking.get(ApiEndPoint.listProd)
+            .addHeaders("token", session.token)
+            .setPriority(Priority.MEDIUM)
+            .setOkHttpClient(okHttpClient)
+            .build()
+            .getAsJSONObject(object : JSONObjectRequestListener {
+                override fun onResponse(response: JSONObject?) {
+
+                    binding.layoutProgress.progressOverlay.visibility = GONE
+
+                    Log.d("transact", response!!.toString())
+
+                    val datas = response.getJSONArray("data")
+                    val prodId: MutableList<String> = ArrayList()
+                    val products: MutableList<String> = ArrayList()
+
+                    for (i in 0 until datas.length()) {
+
+                        prodId.add(datas.getJSONObject(i).getString("PRODTYP"))
+                        products.add(datas.getJSONObject(i).getString("PRODTYP")+"-"
+                                +datas.getJSONObject(i).getString("PRODDES") )
+                    }
+
+                    val adapterArea: ArrayAdapter<*> =
+                        ArrayAdapter<Any?>(applicationContext, android.R.layout.simple_list_item_1,
+                            products as List<Any?>
+                        )
+                    binding.dropdownProduct.setAdapter(adapterArea)
+                    binding.dropdownProduct.setOnItemClickListener { adapterView, view, i, l ->
+                        //Toast.makeText(applicationContext,rpaId[i].toString(), Toast.LENGTH_LONG).show()
+                        prodIdVal = prodId[i]
                     }
                 }
 

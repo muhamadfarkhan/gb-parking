@@ -31,7 +31,7 @@ class MasterController extends Controller
     {
         try {
 
-            $this->data = TblProd::where('passprdd','!=','0')->get();
+            $this->data = TblProd::where('passprdd','!=','00')->get();
 
         } catch (Exception $e) {
             $this->code = 500;
