@@ -1,5 +1,6 @@
 package net.admission.view.transact
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +18,11 @@ import net.admission.helper.SessionManager
 import net.admission.utils.Tools
 import okhttp3.OkHttpClient
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 class NewTransactActivity : AppCompatActivity() {
     private lateinit var passprddVal: String
@@ -233,7 +238,7 @@ class NewTransactActivity : AppCompatActivity() {
                         //Toast.makeText(applicationContext,rpaId[i].toString(), Toast.LENGTH_LONG).show()
                         prodIdVal = prodId[i]
                         passprddVal = passprdd[i]
-                        changePeriod()
+                        changePeriod(passprdd[i])
                     }
                 }
 
@@ -254,7 +259,17 @@ class NewTransactActivity : AppCompatActivity() {
             })
     }
 
-    private fun changePeriod() {
-        binding.etPeriod.setText("test")
+    private fun changePeriod(addDays: String) {
+        val date = Date()
+        var df = SimpleDateFormat("yyyy-MM-dd")
+        val c1: Calendar = Calendar.getInstance()
+        val currentDate: String = df.format(date) // get current date here
+
+        c1.add(Calendar.DAY_OF_YEAR, addDays.toInt())
+        df = SimpleDateFormat("yyyy-MM-dd")
+        val resultDate = c1.time
+        val dueDate = df.format(resultDate)
+
+        binding.etPeriod.setText(dueDate)
     }
 }
