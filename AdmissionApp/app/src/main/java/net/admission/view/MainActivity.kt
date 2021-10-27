@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         binding.btnNewTransact.setOnClickListener {
+            session.isCreate = true
             val intent = Intent(this@MainActivity, NewTransactActivity::class.java)
             startActivity(intent)
         }
@@ -123,9 +124,9 @@ class MainActivity : AppCompatActivity() {
 
                     mAdapter.setOnItemClickListener { _, obj, _ ->
                         //Toast.makeText(applicationContext,obj.username, Toast.LENGTH_LONG).show()
-                        session.stringEditData = obj.passno
-                        session.isCreate = false
-                        startActivity(Intent(applicationContext, NewTransactActivity::class.java))
+                        //session.stringEditData = obj.passno
+                        //session.isCreate = false
+                        //startActivity(Intent(applicationContext, NewTransactActivity::class.java))
                     }
 
                 }

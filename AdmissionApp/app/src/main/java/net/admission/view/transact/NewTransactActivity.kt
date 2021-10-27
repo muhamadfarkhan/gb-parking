@@ -31,6 +31,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class NewTransactActivity : AppCompatActivity() {
+    private lateinit var currentDate: String
+    private lateinit var dueDate: String
     private lateinit var passprddVal: String
     private lateinit var custIdVal: String
     private lateinit var prodIdVal: String
@@ -56,6 +58,7 @@ class NewTransactActivity : AppCompatActivity() {
 
     private fun initStatus() {
         if(!session.isCreate){
+            resetForm()
             getDetail(session.stringEditData)
         }
     }
@@ -89,13 +92,15 @@ class NewTransactActivity : AppCompatActivity() {
                     val remark = data.getJSONObject(0).getString("REMARK")
                     val custId = data.getJSONObject(0).getString("CUSTNO")
                     val prodId = data.getJSONObject(0).getString("PRODTYP")
+                    val prodName = data.getJSONObject(0).getString("PRODDES")
+                    val plgName = data.getJSONObject(0).getString("FULLNM")
 
                     binding.etPlatNo.setText(passno)
                     binding.etNote.setText(remark)
                     custIdVal = custId
                     prodIdVal = prodId
-                    binding.dropdownPelanggan.setText("")
-                    binding.dropdownProduct.setText("")
+                    binding.dropdownPelanggan.setText(plgName)
+                    binding.dropdownProduct.setText("$prodId - $prodName")
 
                 }
 
@@ -180,7 +185,10 @@ class NewTransactActivity : AppCompatActivity() {
             .addBodyParameter("regno", noPlat)
             .addBodyParameter("custno", custIdVal)
             .addBodyParameter("prodtyp", prodIdVal)
-            .addBodyParameter("remark", name)
+            .addBodyParameter("name", name)
+            .addBodyParameter("note", note)
+            .addBodyParameter("startdt", currentDate)
+            .addBodyParameter("enddt", dueDate)
             .setPriority(Priority.MEDIUM)
             .setOkHttpClient(okHttpClient)
             .build()
@@ -351,15 +359,15 @@ class NewTransactActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
     private fun changePeriod(addDays: String) {
         val date = Date()
-        var df = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+        var df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val c1: Calendar = Calendar.getInstance()
-        val currentDate: String = df.format(date) // get current date here
+        currentDate = df.format(date) // get current date here
 
         c1.add(Calendar.DAY_OF_YEAR, addDays.toInt())
-        df = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+        df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val resultDate = c1.time
-        val dueDate = df.format(resultDate)
+        dueDate = df.format(resultDate)
 
-        binding.etPeriod.setText("$currentDate - $dueDate")
+        binding.etPeriod.setText("$currentDate s/d $dueDate")
     }
 }

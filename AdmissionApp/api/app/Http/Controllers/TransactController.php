@@ -38,7 +38,7 @@ class TransactController extends Controller
                 'passno' => ['required'],
                 'factno' => ['required'],
                 'regno' => ['required'],
-                'remark' => ['required'],
+                'name' => ['required'],
                 'custno' => ['required'],
                 'prodtyp' => ['required']
             ]);
@@ -52,7 +52,7 @@ class TransactController extends Controller
             $dataTbl['passno'] = $request->passno;
             $dataTbl['factno'] = $request->factno;
             $dataTbl['regno']  = $request->regno;
-            $dataTbl['remark']  = $request->remark;
+            $dataTbl['remark']  = $request->name." ".$request->note;
             $dataTbl['custno']  = $request->custno;
             $dataTbl['prodtyp']  = $request->prodtyp;
             $dataTbl['lupddttime']  = $todayDT;
