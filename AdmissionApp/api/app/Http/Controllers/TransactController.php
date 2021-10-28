@@ -49,9 +49,9 @@ class TransactController extends Controller
 
             // $this->checkDuplicate($request);
 
-            $dataTbl['passno'] = $request->passno;
-            $dataTbl['factno'] = $request->factno;
-            $dataTbl['regno']  = $request->regno;
+            $dataTbl['passno'] = strtoupper($request->passno);
+            $dataTbl['factno'] = strtoupper($request->factno);
+            $dataTbl['regno']  = strtoupper($request->regno);
             $dataTbl['remark']  = $request->name."-".$request->note;
             $dataTbl['custno']  = $request->custno;
             $dataTbl['flag']  = "A";

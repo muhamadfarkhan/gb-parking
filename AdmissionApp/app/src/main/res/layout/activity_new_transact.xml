@@ -63,7 +63,9 @@
                             android:imeOptions="actionNext"
                             android:singleLine="true"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapCharacters"
+                            android:maxLength="9"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -79,7 +81,8 @@
                             android:imeOptions="actionNext"
                             android:singleLine="true"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,7 +102,8 @@
                             android:imeOptions="actionNext"
                             android:inputType="textEmailAddress"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
