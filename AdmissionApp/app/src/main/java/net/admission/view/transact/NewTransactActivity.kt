@@ -97,6 +97,8 @@ class NewTransactActivity : AppCompatActivity() {
                     val prodId = data.getJSONObject(0).getString("PRODTYP")
                     val prodName = data.getJSONObject(0).getString("PRODDES")
                     val plgName = data.getJSONObject(0).getString("FULLNM")
+                    val startDt = data.getJSONObject(0).getString("STARTDT")
+                    val endDt = data.getJSONObject(0).getString("ENDDT")
 
                     if(remark.contains("-")){
                         nameEdit = remark.split("-")[0]
@@ -109,11 +111,14 @@ class NewTransactActivity : AppCompatActivity() {
                     binding.etPlatNo.setText(passno)
                     binding.etNote.setText(noteEdit)
                     binding.etUserName.setText(nameEdit)
+                    binding.etPeriod.setText("$startDt s/d $endDt")
                     custIdVal = custId
                     prodIdVal = prodId
                     binding.dropdownPelanggan.setText(plgName)
                     binding.dropdownProduct.setText("$prodId - $prodName")
 
+                    populateCustomers()
+                    populateProds()
                 }
 
                 override fun onError(anError: ANError?) {
@@ -247,6 +252,8 @@ class NewTransactActivity : AppCompatActivity() {
     }
 
     private fun populateCustomers() {
+        binding.layoutProgress.progressOverlay.visibility = VISIBLE
+        binding.layoutProgress.textLoading.text = "Getting Data Pelanggan"
 
         val okHttpClient = OkHttpClient().newBuilder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -306,6 +313,8 @@ class NewTransactActivity : AppCompatActivity() {
     }
 
     private fun populateProds() {
+        binding.layoutProgress.progressOverlay.visibility = VISIBLE
+        binding.layoutProgress.textLoading.text = "Getting Data Product"
 
         val okHttpClient = OkHttpClient().newBuilder()
             .connectTimeout(30, TimeUnit.SECONDS)

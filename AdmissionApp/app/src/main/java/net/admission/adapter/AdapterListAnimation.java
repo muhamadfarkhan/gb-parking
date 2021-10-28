@@ -1,5 +1,6 @@
 package net.admission.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,6 +49,11 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
         this.mOnItemDestroyListener = mOnItemDestroyListener;
     }
 
+    public void updateList(List<Transact> transacts){
+        this.items = transacts;
+        notifyDataSetChanged();
+    }
+
     public AdapterListAnimation(Context context, List<Transact> items, int animation_type, boolean add_first) {
         this.items = items;
         ctx = context;
@@ -80,7 +86,7 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         Log.e("onBindViewHolder", "onBindViewHolder : " + position);
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder view = (OriginalViewHolder) holder;

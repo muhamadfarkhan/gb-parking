@@ -30,9 +30,17 @@ class ReportController extends Controller
     {
         try {
 
-            $this->data = TblKrt::join('tbl_prod','tbl_prod.PRODTYP','=','tbl_krt.PRODTYP')
-                    ->select('tbl_krt.*')
-                    ->orderBy('lupddttime','desc')->get();
+            if(empty($request->search)){
+                $this->data = TblKrt::join('tbl_prod','tbl_prod.PRODTYP','=','tbl_krt.PRODTYP')
+                        ->select('tbl_krt.*')
+                        ->orderBy('lupddttime','desc')->get();
+            }else{
+                $this->data = TblKrt::join('tbl_prod','tbl_prod.PRODTYP','=','tbl_krt.PRODTYP')
+                        ->select('tbl_krt.*')
+                        ->where('passno','like','%'.$request->search.'%')
+                        ->orderBy('lupddttime','desc')->get();
+            }
+            
 
         } catch (Exception $e) {
             $this->code = 500;

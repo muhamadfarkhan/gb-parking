@@ -3,6 +3,8 @@ package net.admission.view
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +25,9 @@ import net.admission.view.transact.ListTransactActivity
 import net.admission.view.transact.NewTransactActivity
 import okhttp3.OkHttpClient
 import org.json.JSONObject
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -42,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         initButton()
         initComponent()
-        getListTransact()
+        getListTransact("")
     }
 
     private fun initComponent() {
@@ -52,6 +56,27 @@ class MainActivity : AppCompatActivity() {
         recyclerViewTransact = binding.recyclerView
         recyclerViewTransact.layoutManager = LinearLayoutManager(this)
         recyclerViewTransact.setHasFixedSize(true)
+
+        binding.etSearch.addTextChangedListener(
+            object : TextWatcher {
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+
+                }
+
+                override fun afterTextChanged(s: Editable) {
+                    getListTransact(s.toString())
+                }
+            }
+        )
     }
 
     private fun initButton() {
@@ -60,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         binding.btnRefresh.setOnClickListener {
-            getListTransact()
+            getListTransact("")
         }
         binding.loadMore.setOnClickListener {
             val intent = Intent(this@MainActivity, ListTransactActivity::class.java)
@@ -87,7 +112,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun getListTransact() {
+    private fun getListTransact(search: String) {
 
         binding.progressIndeterminate.visibility = View.VISIBLE
 
@@ -97,8 +122,9 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
-        AndroidNetworking.get(Global.apiServer+ApiEndPoint.listTransact)
+        AndroidNetworking.post(Global.apiServer+ApiEndPoint.listTransact)
             .addHeaders("token", session.token)
+            .addBodyParameter("search",search)
             .setPriority(Priority.MEDIUM)
             .setOkHttpClient(okHttpClient)
             .build()
@@ -123,6 +149,7 @@ class MainActivity : AppCompatActivity() {
                         )
 
                     }
+
 
                     mAdapter = AdapterListAnimation(applicationContext, items, animationType, false)
                     recyclerViewTransact.adapter = mAdapter
@@ -154,6 +181,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        getListTransact()
+        getListTransact("")
     }
 }

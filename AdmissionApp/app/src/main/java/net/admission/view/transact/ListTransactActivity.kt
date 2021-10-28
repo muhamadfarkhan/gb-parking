@@ -19,6 +19,7 @@ import net.admission.api.ApiEndPoint
 import net.admission.databinding.ActivityListTransactBinding
 import net.admission.helper.SessionManager
 import net.admission.model.Transact
+import net.admission.utils.Global
 import net.admission.utils.ItemAnimation
 import net.admission.utils.Tools
 import net.admission.view.SplashScreenActivity
@@ -79,8 +80,9 @@ class ListTransactActivity : AppCompatActivity() {
             .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
-        AndroidNetworking.get(SplashScreenActivity().apiServer+ApiEndPoint.listTransact)
+        AndroidNetworking.post(Global.apiServer+ApiEndPoint.listTransact)
             .addHeaders("token", session.token)
+            .addBodyParameter("search","")
             .setPriority(Priority.MEDIUM)
             .setOkHttpClient(okHttpClient)
             .build()
