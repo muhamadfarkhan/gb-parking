@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Admission App</string>
+    <string name="app_url">Admission App</string>
     <string name="title_default">Admission App</string>
     <string name="CLOSE">Close</string>
 </resources>

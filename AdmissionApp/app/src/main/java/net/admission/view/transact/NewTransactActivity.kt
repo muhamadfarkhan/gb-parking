@@ -22,6 +22,7 @@ import net.admission.helper.SessionManager
 import net.admission.model.Transact
 import net.admission.utils.Tools
 import net.admission.view.LoginActivity
+import net.admission.view.SplashScreenActivity
 import okhttp3.OkHttpClient
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -74,7 +75,7 @@ class NewTransactActivity : AppCompatActivity() {
             .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
-        AndroidNetworking.post(ApiEndPoint.detailTransact)
+        AndroidNetworking.post(SplashScreenActivity().apiServer+ApiEndPoint.detailTransact)
             .addHeaders("token", session.token)
             .addBodyParameter("passno", session.stringEditData)
             .setPriority(Priority.MEDIUM)
@@ -178,7 +179,7 @@ class NewTransactActivity : AppCompatActivity() {
             .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
-        AndroidNetworking.post(ApiEndPoint.storeTransact)
+        AndroidNetworking.post(SplashScreenActivity().apiServer+ApiEndPoint.storeTransact)
             .addHeaders("token", session.token)
             .addBodyParameter("factno", noPlat)
             .addBodyParameter("passno", noPlat)
@@ -242,7 +243,7 @@ class NewTransactActivity : AppCompatActivity() {
             .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
-        AndroidNetworking.get(ApiEndPoint.listCustomer)
+        AndroidNetworking.get(SplashScreenActivity().apiServer+ApiEndPoint.listCustomer)
             .addHeaders("token", session.token)
             .setPriority(Priority.MEDIUM)
             .setOkHttpClient(okHttpClient)
@@ -301,7 +302,7 @@ class NewTransactActivity : AppCompatActivity() {
             .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
-        AndroidNetworking.get(ApiEndPoint.listProd)
+        AndroidNetworking.get(SplashScreenActivity().apiServer+ApiEndPoint.listProd)
             .addHeaders("token", session.token)
             .setPriority(Priority.MEDIUM)
             .setOkHttpClient(okHttpClient)

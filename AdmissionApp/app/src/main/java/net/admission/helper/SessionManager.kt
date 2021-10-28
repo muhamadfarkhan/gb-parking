@@ -83,6 +83,13 @@ class SessionManager(var c: Context) {
             editor.commit()
         }
 
+    var apiServer: String
+        get() = pref.getString("apiServer", "http://api-admission.farkhan.net").toString()
+        set(apiServer) {
+            editor.putString("apiServer", apiServer)
+            editor.commit()
+        }
+
     var itemId: String?
         get() = pref.getString("itemId", "0")
         set(itemId) {

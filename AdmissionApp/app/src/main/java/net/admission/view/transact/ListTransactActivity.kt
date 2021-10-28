@@ -13,6 +13,7 @@ import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
+import net.admission.R
 import net.admission.adapter.AdapterListAnimation
 import net.admission.api.ApiEndPoint
 import net.admission.databinding.ActivityListTransactBinding
@@ -20,6 +21,7 @@ import net.admission.helper.SessionManager
 import net.admission.model.Transact
 import net.admission.utils.ItemAnimation
 import net.admission.utils.Tools
+import net.admission.view.SplashScreenActivity
 import okhttp3.OkHttpClient
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
@@ -77,7 +79,7 @@ class ListTransactActivity : AppCompatActivity() {
             .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
-        AndroidNetworking.get(ApiEndPoint.listTransact)
+        AndroidNetworking.get(SplashScreenActivity().apiServer+ApiEndPoint.listTransact)
             .addHeaders("token", session.token)
             .setPriority(Priority.MEDIUM)
             .setOkHttpClient(okHttpClient)

@@ -64,7 +64,7 @@ class LoginActivity : AppCompatActivity() {
             .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
-        AndroidNetworking.post(ApiEndPoint.login)
+        AndroidNetworking.post(SplashScreenActivity().apiServer+ApiEndPoint.login)
             .addBodyParameter("username",binding.inputUsername.text.toString())
             .addBodyParameter("password",binding.inputPassword.text.toString())
             .setPriority(Priority.MEDIUM)

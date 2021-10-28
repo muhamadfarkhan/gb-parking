@@ -16,6 +16,7 @@ import net.admission.api.ApiEndPoint
 import net.admission.databinding.ActivityMainBinding
 import net.admission.helper.SessionManager
 import net.admission.model.Transact
+import net.admission.utils.Global
 import net.admission.utils.ItemAnimation
 import net.admission.utils.Tools
 import net.admission.view.transact.ListTransactActivity
@@ -54,6 +55,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initButton() {
+        binding.btnSetting.setOnClickListener {
+            val intent = Intent(this@MainActivity, SettingActivity::class.java)
+            startActivity(intent)
+        }
         binding.btnRefresh.setOnClickListener {
             getListTransact()
         }
@@ -92,7 +97,7 @@ class MainActivity : AppCompatActivity() {
             .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
-        AndroidNetworking.get(ApiEndPoint.listTransact)
+        AndroidNetworking.get(Global.apiServer+ApiEndPoint.listTransact)
             .addHeaders("token", session.token)
             .setPriority(Priority.MEDIUM)
             .setOkHttpClient(okHttpClient)
@@ -145,5 +150,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
             })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getListTransact()
     }
 }

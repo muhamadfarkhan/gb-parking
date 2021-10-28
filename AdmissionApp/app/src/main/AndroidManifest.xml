@@ -15,6 +15,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:name=".view.SettingActivity"
+            android:exported="true"
+            android:theme="@style/NoActionBar" />
+        <activity
             android:name=".view.transact.ListTransactActivity"
             android:exported="true"
             android:theme="@style/NoActionBar" />
