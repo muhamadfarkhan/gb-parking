@@ -40,6 +40,8 @@ class NewTransactActivity : AppCompatActivity() {
     private lateinit var noPlat: String
     private lateinit var name: String
     private lateinit var note: String
+    private lateinit var nameEdit: String
+    private lateinit var noteEdit: String
     private lateinit var productType: String
     private lateinit var binding: ActivityNewTransactBinding
     private lateinit var session: SessionManager
@@ -96,8 +98,17 @@ class NewTransactActivity : AppCompatActivity() {
                     val prodName = data.getJSONObject(0).getString("PRODDES")
                     val plgName = data.getJSONObject(0).getString("FULLNM")
 
+                    if(remark.contains("-")){
+                        nameEdit = remark.split("-")[0]
+                        noteEdit = remark.split("-")[1]
+                    }else{
+                        nameEdit = remark
+                        noteEdit = remark
+                    }
+
                     binding.etPlatNo.setText(passno)
-                    binding.etNote.setText(remark)
+                    binding.etNote.setText(noteEdit)
+                    binding.etUserName.setText(nameEdit)
                     custIdVal = custId
                     prodIdVal = prodId
                     binding.dropdownPelanggan.setText(plgName)

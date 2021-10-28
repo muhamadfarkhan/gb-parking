@@ -390,6 +390,15 @@
                 app:srcCompat="@drawable/ic_more_horiz"
                 app:tint="@color/grey_40" />
 
+            <androidx.appcompat.widget.AppCompatEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:hint="Search..."
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                />
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

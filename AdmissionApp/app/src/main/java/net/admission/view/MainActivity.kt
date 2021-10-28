@@ -129,9 +129,9 @@ class MainActivity : AppCompatActivity() {
 
                     mAdapter.setOnItemClickListener { _, obj, _ ->
                         //Toast.makeText(applicationContext,obj.username, Toast.LENGTH_LONG).show()
-                        //session.stringEditData = obj.passno
-                        //session.isCreate = false
-                        //startActivity(Intent(applicationContext, NewTransactActivity::class.java))
+                        session.stringEditData = obj.passno
+                        session.isCreate = false
+                        startActivity(Intent(applicationContext, NewTransactActivity::class.java))
                     }
 
                 }

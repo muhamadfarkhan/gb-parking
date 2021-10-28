@@ -52,8 +52,9 @@ class TransactController extends Controller
             $dataTbl['passno'] = $request->passno;
             $dataTbl['factno'] = $request->factno;
             $dataTbl['regno']  = $request->regno;
-            $dataTbl['remark']  = $request->name." ".$request->note;
+            $dataTbl['remark']  = $request->name."-".$request->note;
             $dataTbl['custno']  = $request->custno;
+            $dataTbl['flag']  = "A";
             $dataTbl['prodtyp']  = $request->prodtyp;
             $dataTbl['lupddttime']  = $todayDT;
             $dataTbl['vehclass']  = 'B';
