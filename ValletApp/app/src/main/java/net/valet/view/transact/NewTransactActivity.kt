@@ -329,20 +329,6 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                 if (ContextCompat.checkSelfPermission(this,
                         Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED
                 ) else {
-                    val d = ContextCompat.getDrawable(this, net.valet.R.drawable.car_top_view)
-                    val bitmap = (d as BitmapDrawable?)!!.bitmap
-                    val stream = ByteArrayOutputStream()
-                    val printPic: PrintPic = PrintPic.getInstance()
-                    printPic.init(bitmap)
-                    val bitmapdata: ByteArray = printPic.printDraw()
-
-                    val bmp = BitmapFactory.decodeResource(
-                        resources,
-                        net.valet.R.drawable.car_top_view
-                    )
-                    val streams = ByteArrayOutputStream()
-                    bmp.compress(Bitmap.CompressFormat.PNG, 90, stream)
-                    val image = streams.toByteArray()
 
                     var socket: BluetoothSocket? = null
                     val thisTitle = "\n" +
