@@ -12,6 +12,7 @@ class ApiEndPoint {
         const val detailTransact = "$SERVER/tr-detail"
         const val listCustomer = "$SERVER/plg-list"
         const val listProd = "$SERVER/prod-list"
+        const val getTrans = "$SERVER/get-trans"
 
     }
 }

@@ -18,6 +18,7 @@ import net.admission.adapter.AdapterListAnimation
 import net.admission.api.ApiEndPoint
 import net.admission.databinding.ActivityListTransactBinding
 import net.admission.helper.SessionManager
+import net.admission.helper.SessionManagerApps
 import net.admission.model.Transact
 import net.admission.utils.Global
 import net.admission.utils.ItemAnimation
@@ -30,6 +31,7 @@ import java.util.concurrent.TimeUnit
 class ListTransactActivity : AppCompatActivity() {
     private lateinit var binding: ActivityListTransactBinding
     private lateinit var session: SessionManager
+    private lateinit var sessionApps: SessionManagerApps
     private lateinit var recyclerViewTransact: RecyclerView
     private lateinit var mAdapter: AdapterListAnimation
     val items = ArrayList<Transact>()
@@ -41,6 +43,7 @@ class ListTransactActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         session = SessionManager(this)
+        sessionApps = SessionManagerApps(this)
 
         initComponent()
         initToolbar()
@@ -80,7 +83,7 @@ class ListTransactActivity : AppCompatActivity() {
             .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
-        AndroidNetworking.post(Global.apiServer+ApiEndPoint.listTransact)
+        AndroidNetworking.post(sessionApps.apiServer+ApiEndPoint.listTransact)
             .addHeaders("token", session.token)
             .addBodyParameter("search","")
             .setPriority(Priority.MEDIUM)

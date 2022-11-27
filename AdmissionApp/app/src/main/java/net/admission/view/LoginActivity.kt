@@ -21,6 +21,7 @@ import net.admission.R
 import net.admission.api.ApiEndPoint
 import net.admission.databinding.ActivityLoginBinding
 import net.admission.helper.SessionManager
+import net.admission.helper.SessionManagerApps
 import okhttp3.OkHttpClient
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var session: SessionManager
+    private lateinit var sessionApps: SessionManagerApps
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +37,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         session = SessionManager(this)
+        sessionApps = SessionManagerApps(this)
 
         initButton()
         initComponen()
@@ -64,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
             .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
-        AndroidNetworking.post(SplashScreenActivity().apiServer+ApiEndPoint.login)
+        AndroidNetworking.post(sessionApps.apiServer+ApiEndPoint.login)
             .addBodyParameter("username",binding.inputUsername.text.toString())
             .addBodyParameter("password",binding.inputPassword.text.toString())
             .setPriority(Priority.MEDIUM)

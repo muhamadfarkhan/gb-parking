@@ -4,6 +4,11 @@
     package="net.admission">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -14,6 +19,9 @@
         android:theme="@style/Theme.AdmissionApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity
+            android:name=".view.transact.PrinterActivity"
+            android:exported="true" />
         <activity
             android:name=".view.SettingActivity"
             android:exported="true"

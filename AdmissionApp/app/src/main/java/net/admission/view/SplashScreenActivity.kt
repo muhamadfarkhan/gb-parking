@@ -8,18 +8,23 @@ import android.os.Handler
 import net.admission.R
 import net.admission.api.ApiEndPoint
 import net.admission.helper.SessionManager
+import net.admission.helper.SessionManagerApps
+import net.admission.utils.Global
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : AppCompatActivity() {
 
     private lateinit var session: SessionManager
-    var apiServer = "http://api-admission.farkhan.net"
+    private lateinit var sessionApps: SessionManagerApps
+    var apiServer = "http://api-submission.farkhan.net"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
         session = SessionManager(this)
+        sessionApps = SessionManagerApps(this)
+        apiServer = sessionApps.apiServer
 
         Handler().postDelayed({
             if(session.isLogin){

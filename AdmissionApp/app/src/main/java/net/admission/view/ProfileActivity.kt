@@ -10,10 +10,12 @@ import net.admission.utils.Tools
 import android.widget.Toast
 import android.view.MenuItem
 import net.admission.R
+import net.admission.helper.SessionManagerApps
 
 class ProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
     private lateinit var session: SessionManager
+    private lateinit var sessionApps: SessionManagerApps
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +23,7 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         session = SessionManager(this)
+        sessionApps = SessionManagerApps(this)
 
         initButton()
         initToolbar()
