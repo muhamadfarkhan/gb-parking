@@ -59,7 +59,7 @@ public class BluetoothUtil {
         out.write(PrinterCommands.ESC_ALIGN_LEFT);
         out.write(bytes);
 
-        Drawable d = ContextCompat.getDrawable(context, R.drawable.blank_car);
+        Drawable d = ContextCompat.getDrawable(context, R.drawable.blank_car_1);
         Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         PrintPic printPic = PrintPic.getInstance();
@@ -84,6 +84,20 @@ public class BluetoothUtil {
         out.write(line);
         out.write(PrinterCommands.FEED_LINE);
         out.write(PrinterCommands.FEED_LINE);
+        out.write(PrinterCommands.FEED_LINE);
+        out.write(PrinterCommands.FEED_LINE);
+        out.close();
+    }
+
+    public static void sendData2(byte[] title, byte[] bytes, BluetoothSocket socket, Context context) throws IOException {
+
+        OutputStream out = socket.getOutputStream();
+        out.write(PrinterCommands.ESC_ALIGN_CENTER);
+        out.write(title);
+
+        out.write(PrinterCommands.ESC_ALIGN_LEFT);
+        out.write(bytes);
+
         out.write(PrinterCommands.FEED_LINE);
         out.write(PrinterCommands.FEED_LINE);
         out.close();

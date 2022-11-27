@@ -35,7 +35,6 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothAdapter
 
 import android.bluetooth.BluetoothSocket
-import android.content.Context
 import net.valet.utils.BluetoothUtil
 import java.io.IOException
 import java.text.ParseException
@@ -43,21 +42,16 @@ import com.google.zxing.Result
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import net.valet.helper.SessionManagerApps
-import android.graphics.BitmapFactory
 
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-
-import android.graphics.drawable.Drawable
-import com.androidnetworking.utils.Utils
-import net.valet.helper.PrintPic
-import java.io.ByteArrayOutputStream
-
-
-
+import android.widget.Button
+import cn.pedant.SweetAlert.SweetAlertDialog
+import net.valet.R
 
 
 class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
+    private lateinit var companyName: String
+    private lateinit var companyAddr: String
+    private lateinit var startDate: String
     private lateinit var currentDate: String
     private lateinit var toDay: String
     private lateinit var datetimeIn: String
@@ -169,11 +163,9 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                     binding.etPeriod.setText("$startDt s/d $endDt")
                     custIdVal = custId
                     prodIdVal = prodId
-                    binding.dropdownPelanggan.setText(plgName)
-                    binding.dropdownProduct.setText("$prodId - $prodName")
+                    binding.dropdownVehclass.setText(plgName)
 
-                    populateCustomers()
-                    populateProds()
+                    populateVehclass()
                 }
 
                 override fun onError(anError: ANError?) {
@@ -193,8 +185,8 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
     }
 
     private fun initComponent() {
-        populateCustomers()
-        populateProds()
+        populateVehclass()
+        getMstKom()
 
         val date = Date()
         var df = SimpleDateFormat("yyyy-MM-dd")
@@ -205,12 +197,54 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
 
     }
 
+    private fun getMstKom() {
+        val okHttpClient = OkHttpClient().newBuilder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
+            .writeTimeout(120, TimeUnit.SECONDS)
+            .build()
+
+        AndroidNetworking.get(sessionApps.apiServer+ApiEndPoint.listMstKom)
+            .addHeaders("token", session.token)
+            .setPriority(Priority.MEDIUM)
+            .setOkHttpClient(okHttpClient)
+            .build()
+            .getAsJSONObject(object : JSONObjectRequestListener {
+                override fun onResponse(response: JSONObject?) {
+
+                    binding.layoutProgress.progressOverlay.visibility = GONE
+
+                    Log.d("transact", response!!.toString())
+
+                    val datas = response.getJSONObject("data")
+
+                    companyName = datas.getString("COMPNM")
+                    companyAddr = datas.getString("COADDR")
+                }
+
+                override fun onError(anError: ANError?) {
+
+                    binding.layoutProgress.progressOverlay.visibility = GONE
+
+                    Log.d("transact", anError!!.message.toString())
+
+                    val errorBody = JSONObject(anError.errorBody)
+
+                    val error = errorBody.getString("message")
+
+                    Tools.showError(this@NewTransactActivity, error)
+
+                }
+
+            })
+    }
+
     private fun initButton() {
         binding.btnSubmitTransact.setOnClickListener {
             submitTransact()
         }
         binding.btnPrint.setOnClickListener {
-            doPrint(binding.btnPrint)
+            doPrint(binding.btnPrint, noPlat, binding.etNoTrans.text.toString())
         }
 
         binding.btnSearchTrans.setOnClickListener {
@@ -308,82 +342,75 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
             })
     }
 
-    private fun doPrint(view: View?) {
+    private fun doPrint(view: View?, noPlat: String, noTran: String) {
 
-        if(binding.etPeriod.text.toString() != "" ||
-            binding.etPeriod.text.toString().isNotEmpty() ) {
+        val bAdapter = BluetoothAdapter.getDefaultAdapter()
 
-            val bAdapter = BluetoothAdapter.getDefaultAdapter()
-
-            val pairedDevices: Set<BluetoothDevice> = bAdapter.getBondedDevices()
-            if (pairedDevices.size > 0) {
-                // There are paired devices. Get the name and address of each paired device.
-                for (device in pairedDevices) {
-                    val deviceName = device.name
-                    val deviceHardwareAddress = device.address // MAC address
-                    Log.d("bluetooth:", deviceName + "-" + deviceHardwareAddress)
-                }
+        val pairedDevices: Set<BluetoothDevice> = bAdapter.getBondedDevices()
+        if (pairedDevices.size > 0) {
+            // There are paired devices. Get the name and address of each paired device.
+            for (device in pairedDevices) {
+                val deviceName = device.name
+                val deviceHardwareAddress = device.address // MAC address
+                Log.d("bluetooth:", "$deviceName-$deviceHardwareAddress")
             }
-
-            try {
-                if (ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED
-                ) else {
-
-                    var socket: BluetoothSocket? = null
-                    val thisTitle = "\n" +
-                            "U Parking\n" +
-                            "Mall Indonesia\n" +
-                            "================================\n" +
-                            "Register Valet\n"
-                    val title: ByteArray = thisTitle.toByteArray()
-
-                    val thisData = "\n" +
-                            "Id Trans      :" + toDay + "\n" +
-                            "Nopol         :" + binding.etPlatNo.text.toString() + "\n" +
-                            "Waktu         :" + binding.etUserName.text.toString() + "\n" +
-                            "Petugas       :" + binding.etNote.text.toString() + "\n" +
-                            "\n"
-                    val data: ByteArray = thisData.toByteArray()
-
-                    //Get BluetoothAdapter
-
-                    //Get BluetoothAdapter
-                    val btAdapter: BluetoothAdapter = BluetoothUtil.getBTAdapter()
-                    if (btAdapter == null) {
-                        Toast.makeText(baseContext, "Open Bluetooth", Toast.LENGTH_SHORT).show()
-                        return
-                    }
-                    // Get sunmi InnerPrinter BluetoothDevice
-                    // Get sunmi InnerPrinter BluetoothDevice
-                    val device: BluetoothDevice = BluetoothUtil.getDevice(btAdapter)
-                    if (device == null) {
-                        Toast.makeText(baseContext,
-                            "Make Sure Bluetooth have InnterPrinter",
-                            Toast.LENGTH_LONG).show()
-                        return
-                    }
-
-                    try {
-                        socket = BluetoothUtil.getSocket(device)
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-                    try {
-                        BluetoothUtil.sendData(title, data, socket, this@NewTransactActivity)
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-
-                }
-            } catch (e: Exception) {
-                Log.e("APP", "Can't print", e)
-            }
-        }else{
-            Toast.makeText(baseContext,
-                "Could not print, empty data",
-                Toast.LENGTH_LONG).show()
         }
+
+        try {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED
+            ) else {
+
+                var socket: BluetoothSocket? = null
+                val thisTitle = "\n" +
+                        companyName +"\n" +
+                        companyAddr +"\n" +
+                        "================================\n" +
+                        "Register Valet\n"
+                val title: ByteArray = thisTitle.toByteArray()
+
+                val thisData = "\n" +
+                        "Id Trans :" + noTran + "\n" +
+                        "Nopol    :" + noPlat + "\n" +
+                        "Waktu    :" + startDate + "\n" +
+                        "Petugas  :" + session.fullname + "\n" +
+                        "\n"
+                val data: ByteArray = thisData.toByteArray()
+
+                //Get BluetoothAdapter
+
+                //Get BluetoothAdapter
+                val btAdapter: BluetoothAdapter = BluetoothUtil.getBTAdapter()
+                if (btAdapter == null) {
+                    Toast.makeText(baseContext, "Open Bluetooth", Toast.LENGTH_SHORT).show()
+                    return
+                }
+                // Get sunmi InnerPrinter BluetoothDevice
+                // Get sunmi InnerPrinter BluetoothDevice
+                val device: BluetoothDevice = BluetoothUtil.getDevice(btAdapter)
+                if (device == null) {
+                    Toast.makeText(baseContext,
+                        "Make Sure Bluetooth have InnterPrinter",
+                        Toast.LENGTH_LONG).show()
+                    return
+                }
+
+                try {
+                    socket = BluetoothUtil.getSocket(device)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                try {
+                    BluetoothUtil.sendData(title, data, socket, this@NewTransactActivity)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+
+            }
+        } catch (e: Exception) {
+            Log.e("APP", "Can't print", e)
+        }
+
     }
 
     private fun initToolbar() {
@@ -396,17 +423,18 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
         name = binding.etUserName.text.toString()
         note = binding.etNote.text.toString()
 
+        val veh = binding.dropdownVehclass
+
         when {
             noPlat.isBlank() -> {
                 binding.etPlatNo.error = "Please fill the blank"
             }
-            name.isBlank() -> {
-                binding.etUserName.error = "Please fill the blank"
-            }
-            note.isBlank() -> {
-                binding.etNote.error = "Please fill the blank"
+            veh.text.isBlank() -> {
+                binding.dropdownVehclass.error = "Please fill the blank"
             }
             else -> {
+                binding.etPlatNo.error = null
+                binding.dropdownVehclass.error = null
                 confirmSubmit()
             }
         }
@@ -427,6 +455,9 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
         binding.layoutProgress.progressOverlay.visibility = VISIBLE
         binding.layoutProgress.textLoading.text = "Processing data"
 
+        var df1: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        startDate = df1.format(Date())
+
         val okHttpClient = OkHttpClient().newBuilder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
@@ -435,17 +466,12 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
 
         AndroidNetworking.post(sessionApps.apiServer+ApiEndPoint.storeTransact)
             .addHeaders("token", session.token)
-            .addBodyParameter("factno", noPlat)
             .addBodyParameter("notran", binding.etNoTrans.text.toString())
-            .addBodyParameter("passno", noPlat)
             .addBodyParameter("regno", noPlat)
-            .addBodyParameter("custno", custIdVal)
+            .addBodyParameter("timestamp", startDate)
             .addBodyParameter("usrnm", session.username)
-            .addBodyParameter("prodtyp", prodIdVal)
-            .addBodyParameter("name", name)
+            .addBodyParameter("vehclass", custIdVal)
             .addBodyParameter("note", note)
-            .addBodyParameter("startdt", currentDate)
-            .addBodyParameter("enddt", dueDate)
             .setPriority(Priority.MEDIUM)
             .setOkHttpClient(okHttpClient)
             .build()
@@ -455,9 +481,21 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
 
                     Log.d("transact",response!!.toString())
 
-                    doPrint(binding.btnPrint)
+                    doPrint(binding.btnPrint, noPlat, binding.etNoTrans.text.toString())
                     resetForm()
-                    Tools.showSuccess(this@NewTransactActivity, response.getString("message"))
+                    //Tools.showSuccess(this@NewTransactActivity, response.getString("message"))
+                    val sw = SweetAlertDialog(this@NewTransactActivity, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Well done...")
+                        .setConfirmText("Print kedua")
+                        .setContentText(response.getString("message"))
+                    sw.show()
+
+                    val btn = sw.findViewById<Button>(R.id.confirm_button)
+                    btn.setBackgroundColor(ContextCompat.getColor(this@NewTransactActivity, R.color.colorPrimaryLight))
+                    btn.setOnClickListener {
+                        print2(noPlat, binding.etNoTrans.text.toString())
+                        sw.dismiss()
+                    }
                 }
 
                 override fun onError(anError: ANError?) {
@@ -467,10 +505,79 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                     val error = errorBody.getString("message")
                     val data = errorBody.getString("data")
 
-                    Tools.showError(this@NewTransactActivity, "$error $data")
+                    Tools.showError(this@NewTransactActivity, "$error /n $data")
                 }
 
             })
+    }
+
+    private fun print2(noPlat: String, noTran: String) {
+        val bAdapter = BluetoothAdapter.getDefaultAdapter()
+
+        val pairedDevices: Set<BluetoothDevice> = bAdapter.getBondedDevices()
+        if (pairedDevices.size > 0) {
+            // There are paired devices. Get the name and address of each paired device.
+            for (device in pairedDevices) {
+                val deviceName = device.name
+                val deviceHardwareAddress = device.address // MAC address
+                Log.d("bluetooth:", "$deviceName-$deviceHardwareAddress")
+            }
+        }
+
+        try {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED
+            ) else {
+
+                var socket: BluetoothSocket? = null
+                val thisTitle = "\n" +
+                        companyName +"\n" +
+                        companyAddr +"\n" +
+                        "================================\n" +
+                        "Register Valet\n"
+                val title: ByteArray = thisTitle.toByteArray()
+
+                val thisData = "\n" +
+                        "Id Trans :" + noTran + "\n" +
+                        "Nopol    :" + noPlat + "\n" +
+                        "Waktu    :" + startDate + "\n" +
+                        "Petugas  :" + session.fullname + "\n" +
+                        "\n"
+                val data: ByteArray = thisData.toByteArray()
+
+                //Get BluetoothAdapter
+
+                //Get BluetoothAdapter
+                val btAdapter: BluetoothAdapter = BluetoothUtil.getBTAdapter()
+                if (btAdapter == null) {
+                    Toast.makeText(baseContext, "Open Bluetooth", Toast.LENGTH_SHORT).show()
+                    return
+                }
+                // Get sunmi InnerPrinter BluetoothDevice
+                // Get sunmi InnerPrinter BluetoothDevice
+                val device: BluetoothDevice = BluetoothUtil.getDevice(btAdapter)
+                if (device == null) {
+                    Toast.makeText(baseContext,
+                        "Make Sure Bluetooth have InnterPrinter",
+                        Toast.LENGTH_LONG).show()
+                    return
+                }
+
+                try {
+                    socket = BluetoothUtil.getSocket(device)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                try {
+                    BluetoothUtil.sendData2(title, data, socket, this@NewTransactActivity)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+
+            }
+        } catch (e: Exception) {
+            Log.e("APP", "Can't print", e)
+        }
     }
 
     private fun resetForm() {
@@ -478,8 +585,7 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
         binding.etUserName.setText("")
         binding.etPeriod.setText("")
         binding.etNote.setText("")
-        binding.dropdownPelanggan.setText("")
-        binding.dropdownProduct.setText("")
+        binding.dropdownVehclass.setText("")
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -492,9 +598,9 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
         return super.onOptionsItemSelected(item)
     }
 
-    private fun populateCustomers() {
+    private fun populateVehclass() {
         binding.layoutProgress.progressOverlay.visibility = VISIBLE
-        binding.layoutProgress.textLoading.text = "Getting Data Pelanggan"
+        binding.layoutProgress.textLoading.text = "Getting Data Jenis Kendaraan"
 
         val okHttpClient = OkHttpClient().newBuilder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -502,7 +608,7 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
             .writeTimeout(120, TimeUnit.SECONDS)
             .build()
 
-        AndroidNetworking.get(sessionApps.apiServer+ApiEndPoint.listCustomer)
+        AndroidNetworking.get(sessionApps.apiServer+ApiEndPoint.listVehclass)
             .addHeaders("token", session.token)
             .setPriority(Priority.MEDIUM)
             .setOkHttpClient(okHttpClient)
@@ -520,9 +626,8 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
 
                     for (i in 0 until datas.length()) {
 
-                        custId.add(datas.getJSONObject(i).getString("CUSTNO"))
-                        customers.add(datas.getJSONObject(i).getString("FULLNM")+"-"
-                                +datas.getJSONObject(i).getString("FADR") )
+                        custId.add(datas.getJSONObject(i).getString("VEHCLASS"))
+                        customers.add(datas.getJSONObject(i).getString("WALKDES") )
                     }
 
                     val adapterArea: ArrayAdapter<*> =
@@ -530,9 +635,9 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                             customers as List<Any?>
                         )
 
-                    binding.dropdownPelanggan.setDropDownBackgroundResource(android.R.color.darker_gray)
-                    binding.dropdownPelanggan.setAdapter(adapterArea)
-                    binding.dropdownPelanggan.setOnItemClickListener { adapterView, view, i, l ->
+                    binding.dropdownVehclass.setDropDownBackgroundResource(android.R.color.darker_gray)
+                    binding.dropdownVehclass.setAdapter(adapterArea)
+                    binding.dropdownVehclass.setOnItemClickListener { adapterView, view, i, l ->
                         //Toast.makeText(applicationContext,rpaId[i].toString(), Toast.LENGTH_LONG).show()
                         custIdVal = custId[i]
                     }
@@ -555,72 +660,6 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
             })
     }
 
-    private fun populateProds() {
-        binding.layoutProgress.progressOverlay.visibility = VISIBLE
-        binding.layoutProgress.textLoading.text = "Getting Data Product"
-
-        val okHttpClient = OkHttpClient().newBuilder()
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
-            .writeTimeout(120, TimeUnit.SECONDS)
-            .build()
-
-        AndroidNetworking.get(sessionApps.apiServer+ApiEndPoint.listProd)
-            .addHeaders("token", session.token)
-            .setPriority(Priority.MEDIUM)
-            .setOkHttpClient(okHttpClient)
-            .build()
-            .getAsJSONObject(object : JSONObjectRequestListener {
-                override fun onResponse(response: JSONObject?) {
-
-                    binding.layoutProgress.progressOverlay.visibility = GONE
-
-                    Log.d("transact", response!!.toString())
-
-                    val datas = response.getJSONArray("data")
-                    val prodId: MutableList<String> = ArrayList()
-                    val passprdd: MutableList<String> = ArrayList()
-                    val products: MutableList<String> = ArrayList()
-
-                    for (i in 0 until datas.length()) {
-
-                        prodId.add(datas.getJSONObject(i).getString("PRODTYP"))
-                        passprdd.add(datas.getJSONObject(i).getString("PASSPRDD"))
-                        products.add(datas.getJSONObject(i).getString("PRODTYP")+"-"
-                                +datas.getJSONObject(i).getString("PRODDES") )
-                    }
-
-                    val adapterArea: ArrayAdapter<*> =
-                        ArrayAdapter<Any?>(applicationContext, android.R.layout.simple_spinner_dropdown_item,
-                            products as List<Any?>
-                        )
-
-                    binding.dropdownProduct.setDropDownBackgroundResource(android.R.color.darker_gray)
-                    binding.dropdownProduct.setAdapter(adapterArea)
-                    binding.dropdownProduct.setOnItemClickListener { adapterView, view, i, l ->
-                        //Toast.makeText(applicationContext,rpaId[i].toString(), Toast.LENGTH_LONG).show()
-                        prodIdVal = prodId[i]
-                        passprddVal = passprdd[i]
-                        changePeriod(passprdd[i])
-                    }
-                }
-
-                override fun onError(anError: ANError?) {
-
-                    binding.layoutProgress.progressOverlay.visibility = GONE
-
-                    Log.d("transact", anError!!.message.toString())
-
-                    val errorBody = JSONObject(anError.errorBody)
-
-                    val error = errorBody.getString("message")
-
-                    Tools.showError(this@NewTransactActivity, error)
-
-                }
-
-            })
-    }
 
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
     private fun changePeriod(addDays: String) {

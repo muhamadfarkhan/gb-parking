@@ -90,7 +90,7 @@ public class AdapterListAnimation extends RecyclerView.Adapter<RecyclerView.View
 
             Transact p = items.get(position);
 
-            view.name.setText(p.getPassno());
+            view.name.setText(p.getRegno());
             view.datetime.setText(p.getDatetime());
             //Tools.displayImageRound(ctx, view.image, p.image);
             view.layoutParent.setOnClickListener(new View.OnClickListener() {

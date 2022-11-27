@@ -421,4 +421,5 @@ public class Tools {
         Button btn = sw.findViewById(R.id.confirm_button);
         btn.setBackgroundColor(ContextCompat.getColor(ctx,R.color.colorPrimaryLight));
     }
+
 }

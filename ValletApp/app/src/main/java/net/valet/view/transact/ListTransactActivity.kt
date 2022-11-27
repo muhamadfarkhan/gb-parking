@@ -99,7 +99,9 @@ class ListTransactActivity : AppCompatActivity() {
                     for (i in 0 until user.length()) {
 
                         items.add(
-                            Transact(user.getJSONObject(i).getString("PASSNO"),
+                            Transact(
+                                user.getJSONObject(i).getString("REGNO"),
+                                user.getJSONObject(i).getString("PASSNO"),
                                 user.getJSONObject(i).getString("FACTNO"),
                                 user.getJSONObject(i).getString("REMARK"),
                                 user.getJSONObject(i).getString("LUPDDTTIME")

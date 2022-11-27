@@ -7,7 +7,7 @@ Nama Table yg terkait dengan update data valet :
 
 Proses :
 Login
-select * from tbl_usr where usrnm = 'xxx' and password = 'xxx' and deptcd = '0110' and lvlcd = '5'
+select * from tbl_usr where usrnm = 'xxx' and password = 'xxx' and deptcd = '0110' and lvlcd = '5' -> DONE
 
 search transaksi :
 seperti di addmission querynya

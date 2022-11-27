@@ -1,3 +1,3 @@
 package net.valet.model
 
-data class Transact(val passno: String, val regno: String, val remark: String, val datetime: String)
+data class Transact(val regno: String,val passno: String, val factno: String, val remark: String, val datetime: String)

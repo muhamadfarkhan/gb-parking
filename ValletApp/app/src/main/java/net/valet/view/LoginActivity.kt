@@ -102,6 +102,7 @@ class LoginActivity : AppCompatActivity() {
                     val errorBody = JSONObject(anError.errorBody)
 
                     val error = errorBody.getString("message")
+                    val error1 = errorBody.getString("data")
 
                     var errMsg: String = if(error.isNullOrEmpty() || error.isBlank()){
                         anError.errorDetail.toString()
@@ -109,10 +110,16 @@ class LoginActivity : AppCompatActivity() {
                         error
                     }
 
+                    var errMsg1: String = if(error1.isNullOrEmpty() || error1.isBlank()){
+                        anError.errorDetail.toString()
+                    }else{
+                        error1
+                    }
+
                     val alertDialog =
-                        SweetAlertDialog(this@LoginActivity, SweetAlertDialog.SUCCESS_TYPE)
+                        SweetAlertDialog(this@LoginActivity, SweetAlertDialog.WARNING_TYPE)
                     alertDialog.titleText = "Oops..."
-                    alertDialog.contentText = errMsg
+                    alertDialog.contentText = errMsg1
                     alertDialog.show()
 
                     val btn: Button = alertDialog.findViewById<View>(R.id.confirm_button) as Button
