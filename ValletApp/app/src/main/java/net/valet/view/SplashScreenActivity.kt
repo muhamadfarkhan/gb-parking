@@ -14,7 +14,7 @@ class SplashScreenActivity : AppCompatActivity() {
 
     private lateinit var session: SessionManager
     private lateinit var sessionApps: SessionManagerApps
-    var apiServer = "http://api-submission.farkhan.net"
+    var apiServer = "http://api-valet.farkhan.net"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

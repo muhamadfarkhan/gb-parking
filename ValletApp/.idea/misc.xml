@@ -3,7 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/MFN/Private/Project/Iyos/ValletApp/app/src/main/res/layout/activity_main.xml" value="0.16666666666666666" />
         <entry key="..\:/MFN/Private/Project/Iyos/ValletApp/app/src/main/res/layout/activity_new_transact.xml" value="0.17552083333333332" />
+        <entry key="..\:/MFN/Private/Project/Iyos/ValletApp/app/src/main/res/layout/activity_splash_screen.xml" value="0.16666666666666666" />
+        <entry key="..\:/MFN/Private/Project/Iyos/ValletApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
       </map>
     </option>
   </component>

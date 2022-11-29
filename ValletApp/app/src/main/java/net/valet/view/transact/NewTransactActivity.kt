@@ -52,6 +52,7 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
     private lateinit var companyName: String
     private lateinit var companyAddr: String
     private lateinit var startDate: String
+    private lateinit var printDate: String
     private lateinit var currentDate: String
     private lateinit var toDay: String
     private lateinit var datetimeIn: String
@@ -314,17 +315,16 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
 
                     Log.d("transact",response!!.toString())
                     val status = response.getString("status")
+                    val data = response.getJSONObject("data")
 
                     if(status == "200"){
-
-                        val data = response.getJSONObject("data")
 
                         datetimeIn = data.getString("DATETIMEIN")
 
                         binding.etPeriod.setText("$datetimeIn s/d ")
 
                     }else{
-                        Tools.showInfo(this@NewTransactActivity, "Data tidak ditemukan")
+                        Tools.showInfo(this@NewTransactActivity, data.toString())
                     }
 
                 }
@@ -336,7 +336,7 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                     val error = errorBody.getString("message")
                     val data = errorBody.getString("data")
 
-                    Tools.showError(this@NewTransactActivity, "Data tidak ditemukan")
+                    Tools.showError(this@NewTransactActivity, data)
                 }
 
             })
@@ -372,7 +372,7 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                 val thisData = "\n" +
                         "Id Trans :" + noTran + "\n" +
                         "Nopol    :" + noPlat + "\n" +
-                        "Waktu    :" + startDate + "\n" +
+                        "Waktu    :" + printDate + "\n" +
                         "Petugas  :" + session.fullname + "\n" +
                         "\n"
                 val data: ByteArray = thisData.toByteArray()
@@ -456,7 +456,9 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
         binding.layoutProgress.textLoading.text = "Processing data"
 
         var df1: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        var df2: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
         startDate = df1.format(Date())
+        printDate = df2.format(Date())
 
         val okHttpClient = OkHttpClient().newBuilder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -490,6 +492,7 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                         .setContentText(response.getString("message"))
                     sw.show()
 
+                    sw.setCancelable(false)
                     val btn = sw.findViewById<Button>(R.id.confirm_button)
                     btn.setBackgroundColor(ContextCompat.getColor(this@NewTransactActivity, R.color.colorPrimaryLight))
                     btn.setOnClickListener {
@@ -505,7 +508,7 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                     val error = errorBody.getString("message")
                     val data = errorBody.getString("data")
 
-                    Tools.showError(this@NewTransactActivity, "$error /n $data")
+                    Tools.showError1(this@NewTransactActivity, data, error)
                 }
 
             })
@@ -540,7 +543,7 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                 val thisData = "\n" +
                         "Id Trans :" + noTran + "\n" +
                         "Nopol    :" + noPlat + "\n" +
-                        "Waktu    :" + startDate + "\n" +
+                        "Waktu    :" + printDate + "\n" +
                         "Petugas  :" + session.fullname + "\n" +
                         "\n"
                 val data: ByteArray = thisData.toByteArray()

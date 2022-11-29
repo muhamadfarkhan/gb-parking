@@ -402,6 +402,16 @@ public class Tools {
         btn.setBackgroundColor(ContextCompat.getColor(ctx,R.color.colorPrimaryLight));
     }
 
+    public static void showError1(Context ctx, String msg, String title){
+        SweetAlertDialog sw = new SweetAlertDialog(ctx, SweetAlertDialog.ERROR_TYPE)
+                .setTitleText(title)
+                .setContentText(msg);
+        sw.show();
+
+        Button btn = sw.findViewById(R.id.confirm_button);
+        btn.setBackgroundColor(ContextCompat.getColor(ctx,R.color.colorPrimaryLight));
+    }
+
     public static void showInfo(Context ctx, String msg){
         SweetAlertDialog sw = new SweetAlertDialog(ctx, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Info")
