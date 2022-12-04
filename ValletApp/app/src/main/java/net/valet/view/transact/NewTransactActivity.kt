@@ -46,6 +46,9 @@ import net.valet.helper.SessionManagerApps
 import android.widget.Button
 import cn.pedant.SweetAlert.SweetAlertDialog
 import net.valet.R
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
@@ -104,9 +107,14 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
     }
 
     private fun initStatus() {
+
+        binding.btnPrint.isEnabled = false
+        binding.btnSubmitTransact.isEnabled = true
+
         if(!session.isCreate){
             resetForm()
             getDetail(session.stringEditData)
+            binding.btnPrint.isEnabled = true
         }
     }
 
@@ -133,38 +141,24 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                     binding.layoutProgress.progressOverlay.visibility = GONE
                     Log.d("transact", response!!.toString())
 
-                    val data = response.getJSONArray("data")
+                    val data = response.getJSONObject("data")
 
-                    val passno = data.getJSONObject(0).getString("PASSNO")
-                    val remark = data.getJSONObject(0).getString("REMARK")
-                    val custId = data.getJSONObject(0).getString("CUSTNO")
-                    val prodId = data.getJSONObject(0).getString("PRODTYP")
-                    val prodName = data.getJSONObject(0).getString("PRODDES")
-                    val plgName = data.getJSONObject(0).getString("FULLNM")
-                    val startDt = data.getJSONObject(0).getString("STARTDT")
-                    val endDt = data.getJSONObject(0).getString("ENDDT")
+                    val regno = data.getString("REGNO")
+                    val notran = data.getString("NOTRAN")
+                    val vehclass = data.getString("VEHCLASS")
+                    val walkdes = data.getString("WALKDES")
+                    val vltdatetime = data.getString("VLTDATETIME")
 
+                    noPlatPrint = regno
+                    noPlat = regno
 
-                    if(remark.contains("-")){
-                        nameEdit = remark.split("-")[0]
-                        noteEdit = remark.split("-")[1]
-                    }else{
-                        nameEdit = remark
-                        noteEdit = remark
-                    }
+                    binding.etNoTrans.setText(notran)
+                    binding.etPlatNo.setText(regno)
 
-                    noPlatPrint = passno
-                    namePrint = nameEdit
-                    notePrint = noteEdit
-                    periodPrint = "$startDt s/d $endDt"
+                    custIdVal = vehclass
+                    binding.dropdownVehclass.setText(walkdes)
 
-                    binding.etPlatNo.setText(passno)
-                    binding.etNote.setText(noteEdit)
-                    binding.etUserName.setText(nameEdit)
-                    binding.etPeriod.setText("$startDt s/d $endDt")
-                    custIdVal = custId
-                    prodIdVal = prodId
-                    binding.dropdownVehclass.setText(plgName)
+                    printDate = vltdatetime
 
                     populateVehclass()
                 }
@@ -244,6 +238,7 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
         binding.btnSubmitTransact.setOnClickListener {
             submitTransact()
         }
+
         binding.btnPrint.setOnClickListener {
             doPrint(binding.btnPrint, noPlat, binding.etNoTrans.text.toString())
         }
@@ -323,6 +318,8 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
 
                         binding.etPeriod.setText("$datetimeIn s/d ")
 
+                        binding.etPlatNo.requestFocus()
+
                     }else{
                         Tools.showInfo(this@NewTransactActivity, data.toString())
                     }
@@ -370,12 +367,19 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                 val title: ByteArray = thisTitle.toByteArray()
 
                 val thisData = "\n" +
-                        "Id Trans :" + noTran + "\n" +
-                        "Nopol    :" + noPlat + "\n" +
-                        "Waktu    :" + printDate + "\n" +
+                        "Id Trans :" + noTran + "\n"
+                val data: ByteArray = thisData.toByteArray()
+
+                val thisData1 = "Nopol    :"
+                val data1: ByteArray = thisData1.toByteArray()
+
+                val thisData1a = "\n" + noPlat
+                val data1a: ByteArray = thisData1a.toByteArray()
+
+                val thisData2 = "Waktu    :" + printDate + "\n" +
                         "Petugas  :" + session.fullname + "\n" +
                         "\n"
-                val data: ByteArray = thisData.toByteArray()
+                val data2: ByteArray = thisData2.toByteArray()
 
                 //Get BluetoothAdapter
 
@@ -401,7 +405,7 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                     e.printStackTrace()
                 }
                 try {
-                    BluetoothUtil.sendData(title, data, socket, this@NewTransactActivity)
+                    BluetoothUtil.sendData(title, data, data1, data1a, data2, socket, this@NewTransactActivity)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -483,8 +487,10 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
 
                     Log.d("transact",response!!.toString())
 
+                    binding.btnPrint.isEnabled = false
+                    binding.btnSubmitTransact.isEnabled = false
+
                     doPrint(binding.btnPrint, noPlat, binding.etNoTrans.text.toString())
-                    resetForm()
                     //Tools.showSuccess(this@NewTransactActivity, response.getString("message"))
                     val sw = SweetAlertDialog(this@NewTransactActivity, SweetAlertDialog.SUCCESS_TYPE)
                         .setTitleText("Well done...")
@@ -497,6 +503,7 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                     btn.setBackgroundColor(ContextCompat.getColor(this@NewTransactActivity, R.color.colorPrimaryLight))
                     btn.setOnClickListener {
                         print2(noPlat, binding.etNoTrans.text.toString())
+                        resetForm()
                         sw.dismiss()
                     }
                 }
@@ -540,13 +547,14 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                         "Register Valet\n"
                 val title: ByteArray = thisTitle.toByteArray()
 
-                val thisData = "\n" +
-                        "Id Trans :" + noTran + "\n" +
-                        "Nopol    :" + noPlat + "\n" +
+                val thisData = noPlat + "\n"
+                val data: ByteArray = thisData.toByteArray()
+
+                val thisData1 = "Id Trans :" + noTran + "\n" +
                         "Waktu    :" + printDate + "\n" +
                         "Petugas  :" + session.fullname + "\n" +
                         "\n"
-                val data: ByteArray = thisData.toByteArray()
+                val data1: ByteArray = thisData1.toByteArray()
 
                 //Get BluetoothAdapter
 
@@ -572,7 +580,8 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
                     e.printStackTrace()
                 }
                 try {
-                    BluetoothUtil.sendData2(title, data, socket, this@NewTransactActivity)
+                    BluetoothUtil.sendData2(title, data, data1, socket, this@NewTransactActivity)
+                    finish()
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -584,6 +593,7 @@ class NewTransactActivity : AppCompatActivity(), ZXingScannerView.ResultHandler 
     }
 
     private fun resetForm() {
+        binding.etNoTrans.setText("")
         binding.etPlatNo.setText("")
         binding.etUserName.setText("")
         binding.etPeriod.setText("")

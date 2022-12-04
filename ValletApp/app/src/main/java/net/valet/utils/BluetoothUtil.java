@@ -50,14 +50,24 @@ public class BluetoothUtil {
         return socket;
     }
 
-    public static void sendData(byte[] title, byte[] bytes, BluetoothSocket socket, Context context) throws IOException {
+    public static void sendData(byte[] title, byte[] bytes,
+                                byte[] bytes1,byte[] bytes1a, byte[] bytes2, BluetoothSocket socket, Context context) throws IOException {
 
         out = socket.getOutputStream();
         out.write(PrinterCommands.ESC_ALIGN_CENTER);
+        out.write(new byte[]{0x1B,0x21,0x00});
         out.write(title);
 
         out.write(PrinterCommands.ESC_ALIGN_LEFT);
+
+        out.write(new byte[]{0x1B,0x21,0x10});
+        out.write(bytes1a);
+        out.write(new byte[]{0x1B,0x21,0x00});
         out.write(bytes);
+
+        out.write(new byte[]{0x1B,0x21,0x00});
+        out.write(PrinterCommands.ESC_ALIGN_LEFT);
+        out.write(bytes2);
 
         Drawable d = ContextCompat.getDrawable(context, R.drawable.blank_car_1);
         Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
@@ -86,18 +96,27 @@ public class BluetoothUtil {
         out.write(PrinterCommands.FEED_LINE);
         out.write(PrinterCommands.FEED_LINE);
         out.write(PrinterCommands.FEED_LINE);
+        out.write(PrinterCommands.FEED_LINE);
+        out.write(PrinterCommands.FEED_LINE);
         out.close();
     }
 
-    public static void sendData2(byte[] title, byte[] bytes, BluetoothSocket socket, Context context) throws IOException {
+    public static void sendData2(byte[] title, byte[] bytes, byte[] bytes1, BluetoothSocket socket, Context context) throws IOException {
 
         OutputStream out = socket.getOutputStream();
         out.write(PrinterCommands.ESC_ALIGN_CENTER);
         out.write(title);
 
         out.write(PrinterCommands.ESC_ALIGN_LEFT);
+
+        out.write(new byte[]{0x1B,0x21,0x10});
         out.write(bytes);
 
+        out.write(new byte[]{0x1B,0x21,0x00});
+        out.write(bytes1);
+
+        out.write(PrinterCommands.FEED_LINE);
+        out.write(PrinterCommands.FEED_LINE);
         out.write(PrinterCommands.FEED_LINE);
         out.write(PrinterCommands.FEED_LINE);
         out.close();

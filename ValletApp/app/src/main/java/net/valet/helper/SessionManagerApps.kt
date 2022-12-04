@@ -85,7 +85,8 @@ class SessionManagerApps(var c: Context) {
 
     var apiServer: String
         //http://api-valet.farkhan.net
-        get() = pref.getString("apiServerApps", "http://192.168.0.104:8080/api-valet/public").toString()
+        //http://192.168.0.104:8080/api-valet/public/
+        get() = pref.getString("apiServerApps", "http://api-valet.farkhan.net").toString()
         set(apiServer) {
             editor.putString("apiServerApps", apiServer)
             editor.commit()
