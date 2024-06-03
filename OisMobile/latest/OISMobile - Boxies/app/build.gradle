@@ -1,0 +1,68 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "net.farkhan.oismobile"
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 12
+        versionName "2.2"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$vKotlin"
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support:support-vector-drawable:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
+
+    //spinner
+    implementation 'com.jaredrummler:material-spinner:1.2.5'
+    //barcode
+    implementation 'me.dm7.barcodescanner:zbar:1.9.13'
+    //implementation 'me.dm7.barcodescanner:zbar:1.8.2'
+    implementation 'me.dm7.barcodescanner:zxing:1.9.13'
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
+    implementation 'com.github.kenglxn.QRGen:android:2.5.0'
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation "com.squareup.retrofit2:converter-gson:2.3.0"
+    implementation 'com.squareup.okhttp3:okhttp:3.9.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
+
+    // RxJava
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.8'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
+    implementation 'com.github.pwittchen:reactivenetwork-rx2:0.12.3'
+
+    // Anko
+    implementation "org.jetbrains.anko:anko:$vAnko"
+    // Anko commons
+    implementation "org.jetbrains.anko:anko-common:$vAnko"
+    // Anko Layouts
+    implementation "org.jetbrains.anko:anko-sdk25:$vAnko"
+    implementation "org.jetbrains.anko:anko-appcompat-v7:$vAnko"
+
+    implementation 'com.android.support:support-annotations:28.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}

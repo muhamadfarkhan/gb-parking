@@ -29,7 +29,6 @@ private const val ARG_PARAM2 = "param2"
 class CheckOutFragment : Fragment(), ZBarScannerView.ResultHandler {
 
 
-
     private lateinit var mScannerView: ZBarScannerView
     private lateinit var passti: PASSTI
     private lateinit var sti: STIUtility

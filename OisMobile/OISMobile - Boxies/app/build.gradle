@@ -23,6 +23,10 @@ android {
             minifyEnabled false
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -57,6 +61,7 @@ dependencies {
     implementation 'com.github.pwittchen:reactivenetwork-rx2:0.12.3'
 
 
+    implementation files('../app/libs/MESDK-3.10.30-RELEASE.aar')
     implementation files('../app/libs/smartcardlib-release.aar')
     implementation files('../app/libs/cardlistener-release.aar')
     implementation files('../app/libs/passtilib-release.aar')
@@ -70,6 +75,8 @@ dependencies {
     implementation "org.jetbrains.anko:anko-appcompat-v7:$vAnko"
 
     implementation 'com.android.support:support-annotations:28.0.0'
+    implementation 'android.arch.navigation:navigation-fragment:1.0.0'
+    implementation 'android.arch.navigation:navigation-ui:1.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

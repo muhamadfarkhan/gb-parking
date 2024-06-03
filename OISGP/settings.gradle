@@ -1,0 +1,2 @@
+rootProject.name='OIS GP'
+include ':app'

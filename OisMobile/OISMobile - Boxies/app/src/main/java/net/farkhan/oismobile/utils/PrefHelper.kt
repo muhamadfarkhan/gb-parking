@@ -52,6 +52,11 @@ class PrefHelper(context: Context?){
     var notran = preferences.getString("notran", "")
         set(value) = preferences.edit().putString("notran",value).apply()
 
+    var MID = preferences.getString("MID", "D024035711830001")
+        set(value) = preferences.edit().putString("MID",value).apply()
+
+    var TID = preferences.getString("MID", "03570005")
+        set(value) = preferences.edit().putString("TID",value).apply()
 
     @SuppressLint("CommitPrefEdits")
     fun logout(){

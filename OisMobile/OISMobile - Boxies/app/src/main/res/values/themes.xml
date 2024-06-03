@@ -1,0 +1,11 @@
+<resources>
+
+    <style name="Theme.Shrine.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Shrine.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Shrine.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>

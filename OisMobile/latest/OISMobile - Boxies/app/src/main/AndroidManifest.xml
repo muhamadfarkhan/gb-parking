@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="net.farkhan.oismobile">
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:allowBackup="true"
+        android:usesCleartextTraffic="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Shrine">
+        <activity
+            android:name=".view.MainActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+<!--                <category android:name="android.intent.category.HOME" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.PrintOutActivity"
+            android:label="@string/title_activity_print_out"
+            android:parentActivityName=".view.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.farkhan.oismobile.view.MainActivity" />
+        </activity>
+        <activity
+            android:name=".print.PrintBluetooth"
+            android:label="Printing"
+            android:parentActivityName=".view.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.farkhan.oismobile.view.MainActivity" />
+        </activity>
+        <activity
+            android:name=".print.PrintOutBluetooth"
+            android:label="Printing"
+            android:parentActivityName=".view.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.farkhan.oismobile.view.MainActivity" />
+        </activity>
+        <activity
+            android:name=".bluetooth.DeviceList"
+            android:label="Printing"
+            android:parentActivityName=".view.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.farkhan.oismobile.view.MainActivity" />
+        </activity>
+        <activity
+            android:name=".view.LoginActivity"
+            android:label="@string/title_activity_login" />
+        <activity
+            android:name=".view.SetupActivity"
+            android:label="@string/title_activity_setup"
+            android:parentActivityName=".view.LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.farkhan.oismobile.view.LoginActivity" />
+        </activity>
+        <activity
+            android:name=".view.BarcodeActivity"
+            android:label="@string/title_activity_barcode"
+            android:parentActivityName=".view.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.farkhan.oismobile.view.MainActivity" />
+        </activity>
+    </application>
+
+</manifest>
